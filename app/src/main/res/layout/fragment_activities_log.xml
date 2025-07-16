@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".ActivitiesLogFragment"
+    android:stretchColumns="*"
+    android:padding="16dp"
+    >
+
+    <TableLayout
+            android:id="@+id/tableHistory"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:stretchColumns="*"
+            android:background="@drawable/cell_border"
+            >
+
+            <!-- Table Header -->
+            <TableRow android:background="#4870D7">
+                <TextView
+                    android:text="Date Request"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:padding="8dp"
+                    android:textStyle="bold"
+                    android:textColor="@color/white"
+                    />
+                <TextView
+                    android:text="Request Type"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:textStyle="bold"
+                    android:textColor="@color/white"/>
+                <TextView
+                    android:text="Detail"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:padding="8dp"
+                    android:textStyle="bold"
+                    android:textColor="@color/white"/>
+            </TableRow>
+    </TableLayout>
+</LinearLayout>
+
+<!--            &lt;!&ndash; Row 1 &ndash;&gt;-->
+<!--            <TableRow>-->
+<!--                <TextView-->
+<!--                    android:text="Jun 18, 2025"-->
+<!--                    android:layout_width="0dp"-->
+<!--                    android:layout_height="match_parent"-->
+<!--                    android:layout_weight="1"-->
+<!--                    android:gravity="top"-->
+<!--                    android:padding="8dp"-->
+<!--                    android:background="@drawable/cell_border"-->
+<!--                     />-->
+
+<!--                &lt;!&ndash; Type &ndash;&gt;-->
+<!--                <TextView-->
+<!--                    android:text="Leave Request"-->
+<!--                    android:layout_width="0dp"-->
+<!--                    android:layout_height="match_parent"-->
+<!--                    android:layout_weight="1"-->
+<!--                    android:gravity="top"-->
+<!--                    android:padding="8dp"-->
+<!--                    android:background="@drawable/cell_border"-->
+<!--           />-->
+
+<!--                &lt;!&ndash; Detail &ndash;&gt;-->
+<!--                <TextView-->
+<!--                    android:text="Leave Type: Sick\nFrom Date: Jun 18, 2025\nTo Date: Jun 20, 2025\nPeriod: 3 days\nReason: Fever"-->
+<!--                    android:layout_width="0dp"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:layout_weight="1"-->
+<!--                    android:gravity="top"-->
+<!--                    android:padding="8dp"-->
+<!--                    android:maxLines="10"-->
+<!--                    android:background="@drawable/cell_border"/>-->
+<!--            </TableRow>-->
+
+
+
+<!--            &lt;!&ndash; Row 3 &ndash;&gt;-->
+<!--            <TableRow >-->
+<!--                <TextView-->
+<!--                    android:layout_width="0dp"-->
+<!--                    android:layout_weight="1"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:text="Jun 20, 2025"-->
+<!--                    android:padding="8dp"-->
+<!--                    android:background="@drawable/cell_border"-->
+<!--                    />-->
+<!--                <TextView-->
+<!--                    android:layout_width="0dp"-->
+<!--                    android:layout_weight="1"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:text="Check-out"-->
+<!--                    android:padding="8dp"-->
+<!--                    android:background="@drawable/cell_border"/>-->
+<!--                <TextView-->
+<!--                    android:layout_width="0dp"-->
+<!--                    android:layout_weight="1"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:padding="8dp"-->
+<!--                    android:text="Check out: 18:40"                    android:maxLines="10"-->
+<!--                    android:ellipsize="end"-->
+<!--                    android:background="@drawable/cell_border"/>-->
+<!--            </TableRow>-->
+<!--        </TableLayout>-->
+<!--</LinearLayout>-->

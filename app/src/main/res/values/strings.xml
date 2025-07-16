@@ -1,0 +1,29 @@
+<resources>
+    <string name="app_name">MiniProject</string>
+
+    <string-array name="requestType">
+        <item> </item>
+        <item>Request check-in</item>
+        <item>Request check-out</item>
+        <item>Request OT</item>
+        <item>Request leave</item>
+    </string-array>
+
+    <string-array name="leaveType">
+        <item> </item>
+        <item>Annual (P)</item>
+        <item>Private Leave (NP)</item>
+        <item>Sick (P)</item>
+        <item>Special Holiday (P)</item>
+    </string-array>
+
+
+    <string-array name="periodType">
+        <item> </item>
+        <item>AM</item>
+        <item>PM</item>
+        <item>Full Day</item>
+       </string-array>
+
+
+</resources>
