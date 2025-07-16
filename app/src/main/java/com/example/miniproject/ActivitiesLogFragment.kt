@@ -32,53 +32,8 @@ class ActivitiesLogFragment : Fragment() {
         tableActivitiesLog = view.findViewById(R.id.tableHistory)
         showActivitiesLog()
 
-        //showActivitiesLog(requireContext(), tableHistory)
-
         return view
     }
-
-//    fun showActivitiesLog (context: Context, tableLayout: TableLayout) {
-//        while (tableLayout.childCount > 1) {
-//            tableLayout.removeViewAt(1)
-//        }
-//
-//        val sharedPref = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
-//
-//        val checkInDate = sharedPref.getString("checkInDate", "--:--") ?: "dummy"
-//        val checkInTime = sharedPref.getString("checkInTime", "--:--") ?: "dummy"
-//
-//         if (checkInTime != "xx:xx") {
-//            addRow(tableLayout, checkInDate, "Check-in", "Check-in: $checkInTime")
-//        }
-//
-//   }
-
-//    fun addRow(tableLayout: TableLayout, date: String, type: String, detail: String) {
-//        val context = tableLayout.context
-//        val row = TableRow(context)  //create new table row using the context
-//
-//        val dateView = TextView(context).apply {
-//            text = date
-//            textSize = 14f
-//        }
-//
-//        val typeView = TextView(context).apply {
-//            text = type
-//            textSize = 14f
-//        }
-//
-//        val DetailView = TextView(context).apply {
-//            text = detail
-//            textSize = 14f
-//        }
-//
-//        row.addView(dateView)
-//        row.addView(typeView)
-//        row.addView(DetailView)
-//
-//        tableLayout.addView(row)
-
-//    }
 
     fun showActivitiesLog() {
         val formatter = DateTimeFormatter.ofPattern("MMM dd, yyyy")

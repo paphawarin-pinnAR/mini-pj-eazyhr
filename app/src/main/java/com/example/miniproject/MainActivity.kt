@@ -97,8 +97,6 @@ class MainActivity : AppCompatActivity() {
          val currentDate = LocalDateTime.now()
          val formatter = DateTimeFormatter.ofPattern("MMM dd, yyyy", Locale.getDefault())
          date.text = currentDate.format(formatter)
-//        val dateFormat = SimpleDateFormat("MMM dd, yyyy", Locale.getDefault())
-//        val currentDate = dateFormat.format(java.util.Date())
-//        date.text = currentDate
+
     }
 }

@@ -77,7 +77,6 @@ class RequestCheckInFragment : Fragment() {
 
         val currentDate = LocalDateTime.now()
         val dateFormat = currentDate.format(DateTimeFormatter.ofPattern("MMM dd, yyyy", Locale.getDefault()))
-        //val timeFormat = currentDate.format(DateTimeFormatter.ofPattern("HH:mm"))
 
         var date = editTextCheckInDate.text.toString()
         var time = editTime.text.toString()
@@ -136,7 +135,6 @@ class RequestCheckInFragment : Fragment() {
     fun addRequestCheckInLog (context: Context, date:String, reqDate:String , time:String) {
         val log = ActivityLogManager.getActivityLog(context).toMutableList() //.toMutableList() to allow add the new list
 
-        //log.add(ActivityLogData(date, "Request Check-in","Request Check-in Date: $reqDate, Time: $time"))
         log.add(ActivityLogManager.createLog(date, "Request Check-in","Request Check-in Date: $reqDate, Time: $time"))
         ActivityLogManager.putActivityLog(context, log)
     }

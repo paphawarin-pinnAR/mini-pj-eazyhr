@@ -44,12 +44,6 @@ class HomeFragment : Fragment() {
         timeCheckIn = view.findViewById(R.id.time_checkin)
         timeCheckOut = view.findViewById(R.id.time_checkout)
 
-//        parentFragmentManager.setFragmentResultListener("requestCheckInTime", viewLifecycleOwner) { _, bundle ->
-//            val requestTime = bundle.getString("checkInTime")
-//            if (requestTime != null) {
-//                timeCheckIn.text = requestTime
-//            }
-//        }
 
        btnCheckInOut.setOnClickListener {
            isCheckedIn = !isCheckedIn //toggle
@@ -128,8 +122,7 @@ class HomeFragment : Fragment() {
     }
 
     fun setTextTimeCheckOut(){
-//        val timeFormat = SimpleDateFormat("HH:mm", Locale.getDefault())
-//        val currentTimeCheckOut = timeFormat.format(java.util.Date())
+
         val  currentTime = LocalTime.now()
         val  formatter = DateTimeFormatter.ofPattern("HH:mm")
         val currentTimeCheckOut = currentTime.format(formatter)
@@ -139,7 +132,6 @@ class HomeFragment : Fragment() {
         val sharedPref = requireContext().getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
         val editor = sharedPref.edit()
         editor.putBoolean("isCheckedIn", false)
-     //   editor.putString("checkOutTime", currentTimeCheckOut)
         editor.apply()
     }
 
@@ -182,7 +174,6 @@ class HomeFragment : Fragment() {
     fun addCheckInLog (context: Context, date:String, time:String) {
         val log = ActivityLogManager.getActivityLog(context).toMutableList() //.toMutableList() to allow add the new list
 
-       // log.add(ActivityLogData(date, "Check-in","Check-in: $time")) //add new log
         log.add(ActivityLogManager.createLog(date, "Check-in","Check-in: $time")) //add new log
         ActivityLogManager.putActivityLog(context, log) //save log in sharedPreference as JSON format
     }
@@ -190,7 +181,6 @@ class HomeFragment : Fragment() {
     fun addCheckOutLog (context: Context, date:String, time:String) {
         val log = ActivityLogManager.getActivityLog(context).toMutableList() //.toMutableList() to allow add the new list
 
-        //log.add(ActivityLogData(date, "Check-out","Check-out: $time"))
         log.add(ActivityLogManager.createLog(date, "Check-out","Check-out: $time"))
         ActivityLogManager.putActivityLog(context, log)
     }
