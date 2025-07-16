@@ -124,24 +124,29 @@ class RequestLeaveFragment : Fragment() {
             val editor = sharedPref.edit()
             editor.putString("leaveRequestType", typeSelected).apply()
 
-            when (typeSelected) {
-                "Annual" -> {
+            // LeaveType.values() คือการดึง enum ทุกตัวออกมาเป็น array เพื่อใช้ .find ในการวนเช็คไทป์
+            // convert the value that is selected from user in the Spinner (String) to enum LeaveType
+            // use .find to find enum ที่ displayType is match typeSelected
+            val selectedType = LeaveType.values().find { it.displayType == typeSelected } ?: LeaveType.NONE
+
+            when (selectedType) {
+                LeaveType.ANNUAL-> {
                     Toast.makeText(requireContext(), "Annual", Toast.LENGTH_SHORT).show()
                 }
 
-                "Private Leave (NP)" -> {
+               LeaveType.PRIVATE_LEAVE -> {
                     Toast.makeText(requireContext(),"Private Leave (NP)", Toast.LENGTH_SHORT).show()
                 }
 
-                "Sick (P)" -> {
+                LeaveType.SICK-> {
                     Toast.makeText(requireContext(), "Sick (P)", Toast.LENGTH_SHORT).show()
                 }
 
-                "Special Holiday (P)" -> {
+               LeaveType.SPECIAL_HOLIDAY -> {
                     Toast.makeText(requireContext(), "Special Holiday (P)", Toast.LENGTH_SHORT).show()
                 }
 
-                else -> {
+                LeaveType.NONE -> {
                     Toast.makeText(requireContext(), "No type selection", Toast.LENGTH_SHORT).show()
                 }
             }
@@ -153,20 +158,22 @@ class RequestLeaveFragment : Fragment() {
             val editor = sharedPref.edit()
             editor.putString("leaveRequestPeriod", periodSelected).apply()
 
-            when (periodSelected) {
-                "AM" -> {
+            val selectedPeriod = PeriodType.values().find { it.displayPeriod == periodSelected } ?: PeriodType.NONE
+
+            when (selectedPeriod) {
+                PeriodType.AM -> {
                     Toast.makeText(requireContext(), "AM", Toast.LENGTH_SHORT).show()
                 }
 
-                "PM" -> {
+                PeriodType.PM -> {
                     Toast.makeText(requireContext(),"PM", Toast.LENGTH_SHORT).show()
                 }
 
-                "Full Day" -> {
+                PeriodType.FULL_DAY -> {
                     Toast.makeText(requireContext(), "Full Day", Toast.LENGTH_SHORT).show()
                 }
 
-                else -> {
+                PeriodType.NONE -> {
                     Toast.makeText(requireContext(), "No period selection", Toast.LENGTH_SHORT).show()
                 }
             }
