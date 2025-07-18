@@ -12,6 +12,7 @@ import com.example.miniproject.R
 import com.example.miniproject.ui.fragment.ActivitiesLogFragment
 import com.example.miniproject.ui.fragment.HomeFragment
 import com.example.miniproject.ui.fragment.RequestFragment
+import com.example.miniproject.utils.AppFormatters
 import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.navigation.NavigationView
 import java.time.LocalDateTime
@@ -91,8 +92,6 @@ class MainActivity : AppCompatActivity() {
 
      fun setTextDate() {
          val currentDate = LocalDateTime.now()
-         val formatter = DateTimeFormatter.ofPattern("MMM dd, yyyy", Locale.getDefault())
-         date.text = currentDate.format(formatter)
-
+         date.text = currentDate.format(AppFormatters.displayDate)
     }
 }

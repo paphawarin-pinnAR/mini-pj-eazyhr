@@ -20,6 +20,7 @@ import com.example.miniproject.enums.LeaveType
 import com.example.miniproject.enums.PeriodType
 import com.example.miniproject.R
 import com.example.miniproject.constants.AppConstants
+import com.example.miniproject.utils.AppFormatters
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.util.Locale
@@ -182,7 +183,7 @@ class RequestLeaveFragment : Fragment() {
 
         btnSave.setOnClickListener {
             val currentDate = LocalDateTime.now()
-            val dateFormat = currentDate.format(DateTimeFormatter.ofPattern("MMM dd, yyyy", Locale.getDefault()))
+            val dateFormat = currentDate.format(AppFormatters.displayDate)
 
             var leaveType = spinnerLeaveType.selectedItem.toString()
             var fromDate = editTextFromDate.text.toString()

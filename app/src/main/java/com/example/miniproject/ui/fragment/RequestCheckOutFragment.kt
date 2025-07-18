@@ -15,6 +15,7 @@ import androidx.core.widget.addTextChangedListener
 import com.example.miniproject.data.manager.ActivityLogManager
 import com.example.miniproject.R
 import com.example.miniproject.constants.AppConstants
+import com.example.miniproject.utils.AppFormatters
 import java.time.DateTimeException
 import java.time.LocalDateTime
 import java.time.LocalTime
@@ -66,7 +67,7 @@ class RequestCheckOutFragment : Fragment() {
 
         btnSave.setOnClickListener {
             val currentDate = LocalDateTime.now()
-            val dateFormat = currentDate.format(DateTimeFormatter.ofPattern("MMM dd, yyyy", Locale.getDefault()))
+            val dateFormat = currentDate.format(AppFormatters.displayDate)
 
             var date = editTextCheckOutDate.text.toString()
             var time = editTime.text.toString()
@@ -96,8 +97,8 @@ class RequestCheckOutFragment : Fragment() {
 
     fun isValidTimeFormat(time: String): Boolean{
         return try {
-            val formatter = DateTimeFormatter.ofPattern("HH:mm")
-            LocalTime.parse(time, formatter)  //Change time (from user) to Localtime
+            val timeFormat = AppFormatters.displayTime
+            LocalTime.parse(time, timeFormat)  //Change time (from user) to Localtime
             true
         }
         catch (e: DateTimeException){

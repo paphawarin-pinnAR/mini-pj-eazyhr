@@ -14,6 +14,7 @@ import androidx.core.content.ContextCompat
 import com.example.miniproject.data.model.ActivityLogData
 import com.example.miniproject.data.manager.ActivityLogManager
 import com.example.miniproject.R
+import com.example.miniproject.utils.AppFormatters
 
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
@@ -35,11 +36,11 @@ class ActivitiesLogFragment : Fragment() {
     }
 
     fun showActivitiesLog() {
-        val formatter = DateTimeFormatter.ofPattern("MMM dd, yyyy")
+        val displayDate = AppFormatters.displayDate
         val logs = ActivityLogManager.getActivityLog(requireContext())
         val sortedLogList = logs.sortedWith(
             compareBy<ActivityLogData> { it.priority } //sort by low->high priority 1,2,3,..,99
-                .thenByDescending { LocalDate.parse(it.date, formatter) }  //in case: same priority, sort by date
+                .thenByDescending { LocalDate.parse(it.date, displayDate) }  //in case: same priority, sort by date
                 .thenBy { ActivityLogManager.typeOrder(it.type) }//in case same priority and date, sort by type order
         )
 

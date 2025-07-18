@@ -16,6 +16,7 @@ import androidx.core.widget.addTextChangedListener
 import com.example.miniproject.data.manager.ActivityLogManager
 import com.example.miniproject.R
 import com.example.miniproject.constants.AppConstants
+import com.example.miniproject.utils.AppFormatters
 import java.time.DateTimeException
 import java.time.LocalDateTime
 import java.time.LocalTime
@@ -98,12 +99,12 @@ class RequestOTFragment : Fragment() {
         checkboxBreakTime.setOnCheckedChangeListener { _, isChecked:Boolean ->  //_ is buttonView: CompoundButton
 
             //format time expected: convert String->LocalTime
-            val formatter = DateTimeFormatter.ofPattern("HH:mm")
+            val timeFormat = AppFormatters.displayTime
 
             //Convert time String ('xx:xx') to LocalTime in 'HH:mm' format
             //(to add 20 mins then convert it to String again and display on the screen)
-            val timeFrom = LocalTime.parse(plusDefaultTimeFrom, formatter)
-            val timeTo = LocalTime.parse(checkOutTime, formatter)
+            val timeFrom = LocalTime.parse(plusDefaultTimeFrom, timeFormat)
+            val timeTo = LocalTime.parse(checkOutTime, timeFormat)
 
             if(isChecked){
                 val plusNewTimeFrom = timeFrom.plusMinutes(20).format(formatter)
@@ -121,7 +122,7 @@ class RequestOTFragment : Fragment() {
 
         btnSave.setOnClickListener {
             val currentDate = LocalDateTime.now()
-            val dateFormat = currentDate.format(DateTimeFormatter.ofPattern("MMM dd, yyyy", Locale.getDefault()))
+            val dateFormat = currentDate.format(AppFormatters.displayDate)
 
             var date = editTextOTDate.text.toString()
             var fromTime = editTextFromTime.text.toString()
@@ -161,8 +162,8 @@ class RequestOTFragment : Fragment() {
 
     fun isValidTimeFormat(time: String): Boolean{
         return try {
-            val formatter = DateTimeFormatter.ofPattern("HH:mm")
-            LocalTime.parse(time, formatter)  //Change time (from user) to Localtime
+            val timeFormat = AppFormatters.displayTime
+            LocalTime.parse(time, timeFormat)  //Change time (from user) to Localtime
             true
         }
         catch (e: DateTimeException){

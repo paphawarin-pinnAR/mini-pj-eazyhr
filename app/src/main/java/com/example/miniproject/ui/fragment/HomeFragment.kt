@@ -11,6 +11,7 @@ import android.widget.TextView
 import com.example.miniproject.data.manager.ActivityLogManager
 import com.example.miniproject.R
 import com.example.miniproject.constants.AppConstants
+import com.example.miniproject.utils.AppFormatters
 import java.time.LocalDateTime
 import java.time.LocalTime
 import java.time.format.DateTimeFormatter
@@ -45,8 +46,8 @@ class HomeFragment : Fragment() {
            isCheckedIn = !isCheckedIn //toggle
 
            val currentDate = LocalDateTime.now()
-           val dateFormat = currentDate.format(DateTimeFormatter.ofPattern("MMM dd, yyyy", Locale.getDefault()))
-           val timeFormat = currentDate.format(DateTimeFormatter.ofPattern("HH:mm"))
+           val dateFormat = currentDate.format(AppFormatters.displayDate)
+           val timeFormat = currentDate.format(AppFormatters.displayTime)
 
             if (isCheckedIn){
                 toggleBtnStatusCheckInOut()
@@ -80,9 +81,8 @@ class HomeFragment : Fragment() {
     }
 
     fun setTextDateCheckIn() {
-        val formatter = DateTimeFormatter.ofPattern("MMM dd, yyyy", Locale.getDefault())
         val currentDate = LocalDateTime.now()
-        val currentDateCheckIn = currentDate.format(formatter)
+        val currentDateCheckIn = currentDate.format(AppFormatters.displayDate)
 
         val sharedPref = requireContext().getSharedPreferences(AppConstants.PREFS_NAME, Context.MODE_PRIVATE)
         val editor = sharedPref.edit()
@@ -91,9 +91,8 @@ class HomeFragment : Fragment() {
     }
 
     fun setTextDateCheckOut() {
-        val formatter = DateTimeFormatter.ofPattern("MMM dd, yyyy", Locale.getDefault())
         val currentDate = LocalDateTime.now()
-        val currentDateCheckOut = currentDate.format(formatter)
+        val currentDateCheckOut = currentDate.format(AppFormatters.displayDate)
 
         val sharedPref = requireContext().getSharedPreferences(AppConstants.PREFS_NAME, Context.MODE_PRIVATE)
         val editor = sharedPref.edit()
@@ -103,9 +102,8 @@ class HomeFragment : Fragment() {
 
 
     fun setTextTimeCheckIn(){
-        val  currentTime = LocalTime.now()
-        val  formatter = DateTimeFormatter.ofPattern("HH:mm")
-        val currentTimeCheckIn = currentTime.format(formatter)
+        val currentTime = LocalTime.now()
+        val currentTimeCheckIn = currentTime.format(AppFormatters.displayTime)
 
         timeCheckIn.text = currentTimeCheckIn
 
@@ -118,10 +116,8 @@ class HomeFragment : Fragment() {
     }
 
     fun setTextTimeCheckOut(){
-
         val  currentTime = LocalTime.now()
-        val  formatter = DateTimeFormatter.ofPattern("HH:mm")
-        val currentTimeCheckOut = currentTime.format(formatter)
+        val currentTimeCheckOut = currentTime.format(AppFormatters.displayTime)
 
         timeCheckOut.text = currentTimeCheckOut
 
