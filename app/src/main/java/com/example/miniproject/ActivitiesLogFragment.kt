@@ -52,44 +52,9 @@ class ActivitiesLogFragment : Fragment() {
         for (log in sortedLogList) {
             val row = TableRow(requireContext()) //create a new row by using the context of fragment to display the data in the table history
 
-            val dateView = TextView(requireContext()).apply {
-                text = log.date
-                textSize = 14f
-                setPadding(16, 18, 16, 18)
-                setBackgroundColor(Color.parseColor("#E0F2FF"))
-                setSingleLine(false)
-                maxLines = 5
-                ellipsize = null
-                layoutParams = TableRow.LayoutParams(
-                    0, TableRow.LayoutParams.WRAP_CONTENT, 1f
-                )
-            }
-
-            val typeView = TextView(requireContext()).apply {
-                text = log.type
-                textSize = 14f
-                setPadding(16, 18, 16, 18)
-                setBackgroundColor(Color.parseColor("#E0F2FF"))
-                setSingleLine(false)
-                maxLines = 8
-                ellipsize = null
-                layoutParams = TableRow.LayoutParams(
-                    0, TableRow.LayoutParams.WRAP_CONTENT, 1f
-                )
-            }
-
-            val detailView = TextView(requireContext()).apply {
-                text = log.detail
-                textSize = 14f
-                setPadding(16, 18, 16, 18)
-                setBackgroundColor(Color.parseColor("#E0F2FF"))
-                setSingleLine(false)
-                maxLines = 10
-                ellipsize = null
-                layoutParams = TableRow.LayoutParams(
-                    0, TableRow.LayoutParams.WRAP_CONTENT, 1f
-                )
-            }
+            val dateView = createLogCellTextView(log.date)
+            val typeView = createLogCellTextView(log.type)
+            val detailView = createLogCellTextView(log.detail)
 
             row.addView(dateView)
             row.addView(typeView)
@@ -100,6 +65,20 @@ class ActivitiesLogFragment : Fragment() {
 
     }
 
+    private fun createLogCellTextView (text: String): TextView {
+        return TextView(requireContext()).apply {
+           this.text = text
+            textSize = 14f
+            setPadding(16, 18, 16, 18)
+            setBackgroundColor(Color.parseColor("#E0F2FF"))
+            setSingleLine(false)
+            maxLines = 10
+            ellipsize = null
+            layoutParams = TableRow.LayoutParams(
+                0, TableRow.LayoutParams.WRAP_CONTENT, 1f
+            )
+        }
+    }
 
 }
 
