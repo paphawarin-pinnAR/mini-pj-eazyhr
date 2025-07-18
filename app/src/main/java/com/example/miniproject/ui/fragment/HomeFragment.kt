@@ -1,8 +1,6 @@
-package com.example.miniproject
+package com.example.miniproject.ui.fragment
 
 import android.content.Context
-import android.content.SharedPreferences
-import android.graphics.Color
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -10,13 +8,13 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
-import android.widget.Toast
-import java.text.SimpleDateFormat
+import com.example.miniproject.data.manager.ActivityLogManager
+import com.example.miniproject.R
+import com.example.miniproject.constants.AppConstants
 import java.time.LocalDateTime
 import java.time.LocalTime
 import java.time.format.DateTimeFormatter
 import java.util.Locale
-import java.util.prefs.Preferences
 
 
 class HomeFragment : Fragment() {
@@ -28,8 +26,6 @@ class HomeFragment : Fragment() {
     var timeCheckedIn: String? = null
     var timeCheckedOut: String? = null
     var date: String? = null
-
-    private val PREFS_NAME = "UserPrefs"
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -88,7 +84,7 @@ class HomeFragment : Fragment() {
         val currentDate = LocalDateTime.now()
         val currentDateCheckIn = currentDate.format(formatter)
 
-        val sharedPref = requireContext().getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
+        val sharedPref = requireContext().getSharedPreferences(AppConstants.PREFS_NAME, Context.MODE_PRIVATE)
         val editor = sharedPref.edit()
         editor.putString("checkInDate", currentDateCheckIn)
         editor.apply()
@@ -99,7 +95,7 @@ class HomeFragment : Fragment() {
         val currentDate = LocalDateTime.now()
         val currentDateCheckOut = currentDate.format(formatter)
 
-        val sharedPref = requireContext().getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
+        val sharedPref = requireContext().getSharedPreferences(AppConstants.PREFS_NAME, Context.MODE_PRIVATE)
         val editor = sharedPref.edit()
         editor.putString("checkOutDate", currentDateCheckOut)
         editor.apply()
@@ -113,7 +109,7 @@ class HomeFragment : Fragment() {
 
         timeCheckIn.text = currentTimeCheckIn
 
-       val sharedPref = requireContext().getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
+       val sharedPref = requireContext().getSharedPreferences(AppConstants.PREFS_NAME, Context.MODE_PRIVATE)
        val editor = sharedPref.edit()
         editor.putBoolean("isCheckedIn", true)
         editor.putString("checkInTime", currentTimeCheckIn)
@@ -129,14 +125,14 @@ class HomeFragment : Fragment() {
 
         timeCheckOut.text = currentTimeCheckOut
 
-        val sharedPref = requireContext().getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
+        val sharedPref = requireContext().getSharedPreferences(AppConstants.PREFS_NAME, Context.MODE_PRIVATE)
         val editor = sharedPref.edit()
         editor.putBoolean("isCheckedIn", false)
         editor.apply()
     }
 
     fun saveData(){
-        val sharedPref = requireActivity().getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
+        val sharedPref = requireActivity().getSharedPreferences(AppConstants.PREFS_NAME, Context.MODE_PRIVATE)
 
         timeCheckedIn = timeCheckIn.text.toString()
         timeCheckedOut = timeCheckOut.text.toString()
@@ -150,7 +146,7 @@ class HomeFragment : Fragment() {
     }
 
     fun retrieveData(){
-        val sharedPref = requireActivity().getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
+        val sharedPref = requireActivity().getSharedPreferences(AppConstants.PREFS_NAME, Context.MODE_PRIVATE)
         timeCheckedIn = sharedPref.getString("checkInTime", "xx:xx")
         timeCheckedOut = sharedPref.getString("checkOutTime", "xx:xx")
         isCheckedIn = sharedPref.getBoolean("isCheckedIn", isCheckedIn)
@@ -174,14 +170,17 @@ class HomeFragment : Fragment() {
     fun addCheckInLog (context: Context, date:String, time:String) {
         val log = ActivityLogManager.getActivityLog(context).toMutableList() //.toMutableList() to allow add the new list
 
-        log.add(ActivityLogManager.createLog(date, "Check-in","Check-in: $time")) //add new log
-        ActivityLogManager.putActivityLog(context, log) //save log in sharedPreference as JSON format
+        log.add(ActivityLogManager.createLog(date, "Check-in", "Check-in: $time")) //add new log
+        ActivityLogManager.putActivityLog(
+            context,
+            log
+        ) //save log in sharedPreference as JSON format
     }
 
     fun addCheckOutLog (context: Context, date:String, time:String) {
         val log = ActivityLogManager.getActivityLog(context).toMutableList() //.toMutableList() to allow add the new list
 
-        log.add(ActivityLogManager.createLog(date, "Check-out","Check-out: $time"))
+        log.add(ActivityLogManager.createLog(date, "Check-out", "Check-out: $time"))
         ActivityLogManager.putActivityLog(context, log)
     }
 }

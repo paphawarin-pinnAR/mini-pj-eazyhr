@@ -1,13 +1,13 @@
-package com.example.miniproject
+package com.example.miniproject.ui.fragment
 
 import android.icu.util.Calendar
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.CalendarView
 import androidx.fragment.app.DialogFragment
+import com.example.miniproject.R
 import java.text.SimpleDateFormat
 import java.util.Locale
 

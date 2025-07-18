@@ -1,6 +1,7 @@
-package com.example.miniproject
+package com.example.miniproject.data.manager
 
 import android.content.Context
+import com.example.miniproject.data.model.ActivityLogData
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 
