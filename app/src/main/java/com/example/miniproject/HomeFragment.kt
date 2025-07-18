@@ -40,7 +40,7 @@ class HomeFragment : Fragment() {
         // 1st is a layout design that I made, 2nd is the container, which is the object of the view group class here
         var view = inflater.inflate(R.layout.fragment_home, container, false)
 
-        btnCheckInOut = view.findViewById(R.id.btnCheckIn)
+        btnCheckInOut = view.findViewById(R.id.btnCheckInOut)
         timeCheckIn = view.findViewById(R.id.time_checkin)
         timeCheckOut = view.findViewById(R.id.time_checkout)
 
@@ -163,11 +163,11 @@ class HomeFragment : Fragment() {
     fun toggleBtnStatusCheckInOut(){
            if (isCheckedIn){
                btnCheckInOut.text = "Check Out"
-               btnCheckInOut.setBackgroundColor(Color.parseColor("#b90203"))
+               btnCheckInOut.setBackgroundResource(R.drawable.bg_button_check_out)
 
             } else {
                btnCheckInOut.text = "Check In"
-               btnCheckInOut.setBackgroundColor(Color.parseColor("#0099CCFF"))
+               btnCheckInOut.setBackgroundResource(R.drawable.bg_button_check_in)
             }
     }
 

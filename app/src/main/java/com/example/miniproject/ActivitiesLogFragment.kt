@@ -1,6 +1,7 @@
 package com.example.miniproject
 
 import android.content.Context
+import android.graphics.Color
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -55,6 +56,7 @@ class ActivitiesLogFragment : Fragment() {
                 text = log.date
                 textSize = 14f
                 setPadding(16, 18, 16, 18)
+                setBackgroundColor(Color.parseColor("#E0F2FF"))
                 setSingleLine(false)
                 maxLines = 5
                 ellipsize = null
@@ -67,6 +69,7 @@ class ActivitiesLogFragment : Fragment() {
                 text = log.type
                 textSize = 14f
                 setPadding(16, 18, 16, 18)
+                setBackgroundColor(Color.parseColor("#E0F2FF"))
                 setSingleLine(false)
                 maxLines = 8
                 ellipsize = null
@@ -79,6 +82,7 @@ class ActivitiesLogFragment : Fragment() {
                 text = log.detail
                 textSize = 14f
                 setPadding(16, 18, 16, 18)
+                setBackgroundColor(Color.parseColor("#E0F2FF"))
                 setSingleLine(false)
                 maxLines = 10
                 ellipsize = null
