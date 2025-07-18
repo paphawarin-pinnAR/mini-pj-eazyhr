@@ -1,4 +1,4 @@
-package com.example.miniproject
+package com.example.miniproject.ui.fragment
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -8,7 +8,7 @@ import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Spinner
-import android.widget.Toast
+import com.example.miniproject.R
 
 
 class RequestFragment : Fragment() {

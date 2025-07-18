@@ -1,4 +1,4 @@
-package com.example.miniproject
+package com.example.miniproject.enums
 
 enum class PeriodType(val displayPeriod:String) {
     AM("AM"),

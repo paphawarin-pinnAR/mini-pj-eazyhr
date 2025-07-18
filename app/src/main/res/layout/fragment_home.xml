@@ -7,7 +7,7 @@
     android:background="@color/design_default_color_surface"
     android:orientation="vertical"
     android:paddingTop="50dp"
-    tools:context=".HomeFragment">
+    tools:context=".ui.fragment.HomeFragment">
 
     <LinearLayout
         android:layout_width="match_parent"

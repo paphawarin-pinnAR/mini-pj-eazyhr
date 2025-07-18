@@ -1,4 +1,4 @@
-package com.example.miniproject
+package com.example.miniproject.enums
 
 enum class LeaveType (val displayType: String) {
     ANNUAL("Annual (P)"),

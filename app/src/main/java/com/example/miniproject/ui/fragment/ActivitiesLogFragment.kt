@@ -1,4 +1,4 @@
-package com.example.miniproject
+package com.example.miniproject.ui.fragment
 
 import android.content.Context
 import android.graphics.Color
@@ -10,18 +10,17 @@ import android.view.ViewGroup
 import android.widget.TableLayout
 import android.widget.TableRow
 import android.widget.TextView
-import androidx.core.view.setPadding
-import androidx.lifecycle.whenResumed
+import androidx.core.content.ContextCompat
+import com.example.miniproject.data.model.ActivityLogData
+import com.example.miniproject.data.manager.ActivityLogManager
+import com.example.miniproject.R
+import com.example.miniproject.utils.AppFormatters
 
-import java.sql.Date
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
-import java.util.Locale
 
 class ActivitiesLogFragment : Fragment() {
     private lateinit var tableActivitiesLog: TableLayout
-
-    private val PREFS_NAME = "UserPrefs"
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -37,12 +36,12 @@ class ActivitiesLogFragment : Fragment() {
     }
 
     fun showActivitiesLog() {
-        val formatter = DateTimeFormatter.ofPattern("MMM dd, yyyy")
+        val displayDate = AppFormatters.displayDate
         val logs = ActivityLogManager.getActivityLog(requireContext())
         val sortedLogList = logs.sortedWith(
             compareBy<ActivityLogData> { it.priority } //sort by low->high priority 1,2,3,..,99
-                .thenByDescending { LocalDate.parse(it.date, formatter) }  //in case: same priority, sort by date
-                .thenBy {ActivityLogManager.typeOrder(it.type) }//in case same priority and date, sort by type order
+                .thenByDescending { LocalDate.parse(it.date, displayDate) }  //in case: same priority, sort by date
+                .thenBy { ActivityLogManager.typeOrder(it.type) }//in case same priority and date, sort by type order
         )
 
                while (tableActivitiesLog.childCount > 1) {
@@ -66,11 +65,12 @@ class ActivitiesLogFragment : Fragment() {
     }
 
     private fun createLogCellTextView (text: String): TextView {
+        val color = ContextCompat.getColor(requireContext(), R.color.light_blue)
         return TextView(requireContext()).apply {
            this.text = text
             textSize = 14f
             setPadding(16, 18, 16, 18)
-            setBackgroundColor(Color.parseColor("#E0F2FF"))
+            setBackgroundColor(color)
             setSingleLine(false)
             maxLines = 10
             ellipsize = null

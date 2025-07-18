@@ -1,7 +1,6 @@
-package com.example.miniproject
+package com.example.miniproject.ui.fragment
 
 import android.content.Context
-import android.icu.text.Transliterator.Position
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -16,9 +15,13 @@ import android.widget.Spinner
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.core.widget.addTextChangedListener
-import java.time.DateTimeException
+import com.example.miniproject.data.manager.ActivityLogManager
+import com.example.miniproject.enums.LeaveType
+import com.example.miniproject.enums.PeriodType
+import com.example.miniproject.R
+import com.example.miniproject.constants.AppConstants
+import com.example.miniproject.utils.AppFormatters
 import java.time.LocalDateTime
-import java.time.LocalTime
 import java.time.format.DateTimeFormatter
 import java.util.Locale
 
@@ -32,8 +35,6 @@ class RequestLeaveFragment : Fragment() {
     private lateinit var editReason: EditText
     private lateinit var btnSave: Button
     private lateinit var btnCancel: Button
-
-    private val PREFS_NAME = "UserPrefs"
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -120,7 +121,7 @@ class RequestLeaveFragment : Fragment() {
         val periodTypeList = resources.getStringArray(R.array.periodType).toList()
 
         setupSpinner(spinnerLeaveType, leaveTypeList) { typeSelected ->
-            val sharedPref = requireContext().getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
+            val sharedPref = requireContext().getSharedPreferences(AppConstants.PREFS_NAME, Context.MODE_PRIVATE)
             val editor = sharedPref.edit()
             editor.putString("leaveRequestType", typeSelected).apply()
 
@@ -130,7 +131,7 @@ class RequestLeaveFragment : Fragment() {
             val selectedType = LeaveType.values().find { it.displayType == typeSelected } ?: LeaveType.NONE
 
             when (selectedType) {
-                LeaveType.ANNUAL-> {
+                LeaveType.ANNUAL -> {
                     Toast.makeText(requireContext(), getString(R.string.leave_annual), Toast.LENGTH_SHORT).show()
                 }
 
@@ -138,7 +139,7 @@ class RequestLeaveFragment : Fragment() {
                     Toast.makeText(requireContext(),getString(R.string.leave_private), Toast.LENGTH_SHORT).show()
                 }
 
-                LeaveType.SICK-> {
+                LeaveType.SICK -> {
                     Toast.makeText(requireContext(), getString(R.string.leave_sick), Toast.LENGTH_SHORT).show()
                 }
 
@@ -154,7 +155,7 @@ class RequestLeaveFragment : Fragment() {
         }
 
         setupSpinner(spinnerPeriodType, periodTypeList) { periodSelected ->
-            val sharedPref = requireContext().getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
+            val sharedPref = requireContext().getSharedPreferences(AppConstants.PREFS_NAME, Context.MODE_PRIVATE)
             val editor = sharedPref.edit()
             editor.putString("leaveRequestPeriod", periodSelected).apply()
 
@@ -182,7 +183,7 @@ class RequestLeaveFragment : Fragment() {
 
         btnSave.setOnClickListener {
             val currentDate = LocalDateTime.now()
-            val dateFormat = currentDate.format(DateTimeFormatter.ofPattern("MMM dd, yyyy", Locale.getDefault()))
+            val dateFormat = currentDate.format(AppFormatters.displayDate)
 
             var leaveType = spinnerLeaveType.selectedItem.toString()
             var fromDate = editTextFromDate.text.toString()
@@ -190,7 +191,7 @@ class RequestLeaveFragment : Fragment() {
             var leavePeriod = spinnerPeriodType.selectedItem.toString()
             var reason = editReason.text.toString()
 
-            val sharedPref = requireActivity().getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
+            val sharedPref = requireActivity().getSharedPreferences(AppConstants.PREFS_NAME, Context.MODE_PRIVATE)
             val editor = sharedPref.edit()
             editor.putString("leaveRequestType", leaveType) //save leaveRequestType selection into the SharedPref by using "leaveRequestType" key
             editor.putString("leaveDateFrom", fromDate)
@@ -263,8 +264,13 @@ class RequestLeaveFragment : Fragment() {
     fun addRequestLeaveLog (context: Context, date:String, reqType: String, dateFrom:String, dateTo:String, period:String, reason:String) {
         val log = ActivityLogManager.getActivityLog(context).toMutableList() //.toMutableList() to allow add the new list
 
-       // log.add(ActivityLogData(date, "Request Leave","Leave Type: $reqType, From Date: $dateFrom, To Date: $dateTo, Period: $period Reason: $reason"))
-        log.add(ActivityLogManager.createLog(date, "Request Leave","Leave Type: $reqType, From Date: $dateFrom, To Date: $dateTo, Period: $period Reason: $reason"))
+        log.add(
+            ActivityLogManager.createLog(
+                date,
+                "Request Leave",
+                "Leave Type: $reqType, From Date: $dateFrom, To Date: $dateTo, Period: $period Reason: $reason"
+            )
+        )
         ActivityLogManager.putActivityLog(context, log)
     }
     }

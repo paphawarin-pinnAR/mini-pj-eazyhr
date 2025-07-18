@@ -1,4 +1,4 @@
-package com.example.miniproject
+package com.example.miniproject.data.model
 
 data class ActivityLogData (
     val date: String,

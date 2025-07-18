@@ -1,10 +1,7 @@
-package com.example.miniproject
+package com.example.miniproject.ui.fragment
 
 import android.content.Context
-import android.graphics.Color
 import android.os.Bundle
-import android.text.Editable
-import android.text.TextWatcher
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -15,8 +12,10 @@ import android.widget.ImageView
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.core.widget.addTextChangedListener
-import androidx.fragment.app.FragmentManager
-import androidx.fragment.app.FragmentTransaction
+import com.example.miniproject.data.manager.ActivityLogManager
+import com.example.miniproject.R
+import com.example.miniproject.constants.AppConstants
+import com.example.miniproject.utils.AppFormatters
 import java.time.DateTimeException
 import java.time.LocalDateTime
 import java.time.LocalTime
@@ -31,8 +30,6 @@ class RequestCheckInFragment : Fragment() {
 
     private lateinit var editTime : EditText
     private lateinit var editTextCheckInDate : EditText
-
-    private val PREFS_NAME = "UserPrefs"
 
     override fun onCreateView(
 
@@ -76,12 +73,12 @@ class RequestCheckInFragment : Fragment() {
         btnSave.setOnClickListener {
 
         val currentDate = LocalDateTime.now()
-        val dateFormat = currentDate.format(DateTimeFormatter.ofPattern("MMM dd, yyyy", Locale.getDefault()))
+        val dateFormat = currentDate.format(AppFormatters.displayDate)
 
         var date = editTextCheckInDate.text.toString()
         var time = editTime.text.toString()
 
-          val sharedPref = requireActivity().getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
+          val sharedPref = requireActivity().getSharedPreferences(AppConstants.PREFS_NAME, Context.MODE_PRIVATE)
           val editor = sharedPref.edit()
           editor.putString("checkInDate", date)
           editor.putString("checkInTime", time)
@@ -107,8 +104,8 @@ class RequestCheckInFragment : Fragment() {
 
     fun isValidTimeFormat(time: String): Boolean{
         return try {
-            val formatter = DateTimeFormatter.ofPattern("HH:mm")
-            LocalTime.parse(time, formatter)  //Change time (from user) to Localtime
+            val timeFormat = AppFormatters.displayTime
+            LocalTime.parse(time, timeFormat)  //Change time (from user) to Localtime
             true
         }
          catch (e: DateTimeException){
@@ -135,7 +132,13 @@ class RequestCheckInFragment : Fragment() {
     fun addRequestCheckInLog (context: Context, date:String, reqDate:String , time:String) {
         val log = ActivityLogManager.getActivityLog(context).toMutableList() //.toMutableList() to allow add the new list
 
-        log.add(ActivityLogManager.createLog(date, "Request Check-in","Request Check-in Date: $reqDate, Time: $time"))
+        log.add(
+            ActivityLogManager.createLog(
+                date,
+                "Request Check-in",
+                "Request Check-in Date: $reqDate, Time: $time"
+            )
+        )
         ActivityLogManager.putActivityLog(context, log)
     }
 
