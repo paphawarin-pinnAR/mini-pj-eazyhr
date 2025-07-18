@@ -15,8 +15,6 @@ class RequestFragment : Fragment() {
 
     private lateinit var spinnerType: Spinner
 
-
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -52,7 +50,6 @@ class RequestFragment : Fragment() {
                     "Request OT" -> RequestOTFragment()
                     "Request leave" -> RequestLeaveFragment()
                     else -> {
-                        //Toast.makeText(requireContext(), "No type selection", Toast.LENGTH_SHORT).show()
                         null
                     }
                 }

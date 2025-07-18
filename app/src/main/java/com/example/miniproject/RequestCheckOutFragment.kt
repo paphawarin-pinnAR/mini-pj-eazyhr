@@ -65,13 +65,6 @@ class RequestCheckOutFragment : Fragment() {
             checkFields()
         }
 
-//        editTime.addTextChangedListener(object : TextWatcher {
-//            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-//                checkFields()
-//            }
-//            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
-//            override fun afterTextChanged(s: Editable?) {}
-//        })
 
         btnSave.setOnClickListener {
             val currentDate = LocalDateTime.now()
@@ -92,20 +85,13 @@ class RequestCheckOutFragment : Fragment() {
             editTextCheckOutDate.text.clear()
             addRequestCheckOutLog(requireContext(), dateFormat, date, time)
 
-//            val  bundle = Bundle().apply {
-//               putString("checkOutDate", date)
-//               putString("checkOutTime", time)
-//            }
-
-//            parentFragmentManager.setFragmentResult("requestCheckOutTime", bundle)
-
-            Toast.makeText(requireContext(), "The data has been applied.", Toast.LENGTH_LONG).show()
+            Toast.makeText(requireContext(), getString(R.string.toast_data_applied), Toast.LENGTH_SHORT).show()
         }
 
            btnCancel.setOnClickListener {
                editTime.text.clear()
                editTextCheckOutDate.text.clear()
-               Toast.makeText(requireContext(), "The data has been deleted.", Toast.LENGTH_LONG).show()
+               Toast.makeText(requireContext(), getString(R.string.toast_data_deleted), Toast.LENGTH_SHORT).show()
         }
 
         return view
@@ -142,7 +128,6 @@ class RequestCheckOutFragment : Fragment() {
     fun addRequestCheckOutLog (context: Context, date:String, reqDate:String, time:String) {
         val log = ActivityLogManager.getActivityLog(context).toMutableList() //.toMutableList() to allow add the new list
 
-        //log.add(ActivityLogData(date, "Request Check-out","Request Check-out Date: $reqDate, Time: $time"))
         log.add(ActivityLogManager.createLog(date, "Request Check-out","Request Check-out Date: $reqDate, Time: $time"))
         ActivityLogManager.putActivityLog(context, log)
     }

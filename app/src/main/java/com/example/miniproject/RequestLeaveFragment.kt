@@ -124,25 +124,30 @@ class RequestLeaveFragment : Fragment() {
             val editor = sharedPref.edit()
             editor.putString("leaveRequestType", typeSelected).apply()
 
-            when (typeSelected) {
-                "Annual" -> {
-                    Toast.makeText(requireContext(), "Annual", Toast.LENGTH_SHORT).show()
+            // LeaveType.values() คือการดึง enum ทุกตัวออกมาเป็น array เพื่อใช้ .find ในการวนเช็คไทป์
+            // convert the value that is selected from user in the Spinner (String) to enum LeaveType
+            // use .find to find enum ที่ displayType is match typeSelected
+            val selectedType = LeaveType.values().find { it.displayType == typeSelected } ?: LeaveType.NONE
+
+            when (selectedType) {
+                LeaveType.ANNUAL-> {
+                    Toast.makeText(requireContext(), getString(R.string.leave_annual), Toast.LENGTH_SHORT).show()
                 }
 
-                "Private Leave (NP)" -> {
-                    Toast.makeText(requireContext(),"Private Leave (NP)", Toast.LENGTH_SHORT).show()
+               LeaveType.PRIVATE_LEAVE -> {
+                    Toast.makeText(requireContext(),getString(R.string.leave_private), Toast.LENGTH_SHORT).show()
                 }
 
-                "Sick (P)" -> {
-                    Toast.makeText(requireContext(), "Sick (P)", Toast.LENGTH_SHORT).show()
+                LeaveType.SICK-> {
+                    Toast.makeText(requireContext(), getString(R.string.leave_sick), Toast.LENGTH_SHORT).show()
                 }
 
-                "Special Holiday (P)" -> {
-                    Toast.makeText(requireContext(), "Special Holiday (P)", Toast.LENGTH_SHORT).show()
+               LeaveType.SPECIAL_HOLIDAY -> {
+                    Toast.makeText(requireContext(), getString(R.string.leave_special_holiday), Toast.LENGTH_SHORT).show()
                 }
 
-                else -> {
-                    Toast.makeText(requireContext(), "No type selection", Toast.LENGTH_SHORT).show()
+                LeaveType.NONE -> {
+                    Toast.makeText(requireContext(), getString(R.string.empty_leave_item), Toast.LENGTH_SHORT).show()
                 }
             }
             checkFields()
@@ -153,21 +158,23 @@ class RequestLeaveFragment : Fragment() {
             val editor = sharedPref.edit()
             editor.putString("leaveRequestPeriod", periodSelected).apply()
 
-            when (periodSelected) {
-                "AM" -> {
-                    Toast.makeText(requireContext(), "AM", Toast.LENGTH_SHORT).show()
+            val selectedPeriod = PeriodType.values().find { it.displayPeriod == periodSelected } ?: PeriodType.NONE
+
+            when (selectedPeriod) {
+                PeriodType.AM -> {
+                    Toast.makeText(requireContext(), getString(R.string.period_am), Toast.LENGTH_SHORT).show()
                 }
 
-                "PM" -> {
-                    Toast.makeText(requireContext(),"PM", Toast.LENGTH_SHORT).show()
+                PeriodType.PM -> {
+                    Toast.makeText(requireContext(),getString(R.string.period_pm), Toast.LENGTH_SHORT).show()
                 }
 
-                "Full Day" -> {
-                    Toast.makeText(requireContext(), "Full Day", Toast.LENGTH_SHORT).show()
+                PeriodType.FULL_DAY -> {
+                    Toast.makeText(requireContext(), getString(R.string.period_full_day), Toast.LENGTH_SHORT).show()
                 }
 
-                else -> {
-                    Toast.makeText(requireContext(), "No period selection", Toast.LENGTH_SHORT).show()
+                PeriodType.NONE -> {
+                    Toast.makeText(requireContext(), getString(R.string.empty_period_item), Toast.LENGTH_SHORT).show()
                 }
             }
             checkFields()
@@ -197,7 +204,7 @@ class RequestLeaveFragment : Fragment() {
             editTextToDate.text.clear()
             spinnerPeriodType.setSelection(0)
             editReason.text.clear()
-            Toast.makeText(requireContext(), "The data has been applied.", Toast.LENGTH_LONG).show()
+            Toast.makeText(requireContext(), getString(R.string.toast_data_applied), Toast.LENGTH_SHORT).show()
 
             addRequestLeaveLog(requireContext(), dateFormat, leaveType, fromDate, toDate, leavePeriod, reason)
         }
@@ -208,7 +215,7 @@ class RequestLeaveFragment : Fragment() {
             editTextToDate.text.clear()
             spinnerPeriodType.setSelection(0)
             editReason.text.clear()
-            Toast.makeText(requireContext(), "The data has been deleted.", Toast.LENGTH_LONG).show()
+            Toast.makeText(requireContext(), getString(R.string.toast_data_deleted), Toast.LENGTH_SHORT).show()
         }
 
             return view

@@ -82,9 +82,6 @@ class RequestOTFragment : Fragment() {
         val defaultTimeFrom = LocalTime.parse(checkInTime, formatter)
         val plusDefaultTimeFrom = defaultTimeFrom.plusHours(9).format(formatter)
 
-        //val defaultTimeFrom = sharedPref.getString("checkInTime", " " ) ?: " "  //if not found "CheckInTime" key or null, return " ".
-        //val defaultTimeTo = sharedPref.getString("checkOutTime", " " ) ?: " "
-
         editTextFromTime.setText(plusDefaultTimeFrom)
         editTextToTime.setText(checkOutTime)
 
@@ -113,10 +110,6 @@ class RequestOTFragment : Fragment() {
             if(isChecked){
                 val plusNewTimeFrom = timeFrom.plusMinutes(20).format(formatter)
                 val plusNewTimeTo = timeTo.plusMinutes(20).format(formatter)
-
-                //convert LocalTime->String then put it into the to From time field and To time field
-               // val newTimeFrom = plusNewTimeFrom.format(formatter)
-              //  val newTimeTo = plusNewTimeTo.format(formatter)
 
                 editTextFromTime.setText(plusNewTimeFrom)
                 editTextToTime.setText(plusNewTimeTo)
@@ -152,7 +145,7 @@ class RequestOTFragment : Fragment() {
             editTextFromTime.text.clear()
             editTextToTime.text.clear()
             editReason.text.clear()
-            Toast.makeText(requireContext(), "The data has been applied.", Toast.LENGTH_LONG).show()
+            Toast.makeText(requireContext(), getString(R.string.toast_data_applied), Toast.LENGTH_SHORT).show()
 
             addRequestOTLog(requireContext(), dateFormat, date, fromTime, toTime, reason)
         }
@@ -163,7 +156,7 @@ class RequestOTFragment : Fragment() {
             editTextFromTime.text.clear()
             editTextToTime.text.clear()
             editReason.text.clear()
-            Toast.makeText(requireContext(), "The data has been deleted.", Toast.LENGTH_LONG).show()
+            Toast.makeText(requireContext(), getString(R.string.toast_data_deleted), Toast.LENGTH_SHORT).show()
         }
         return view
     }
@@ -200,7 +193,6 @@ class RequestOTFragment : Fragment() {
     fun addRequestOTLog (context: Context, date:String, reqDate:String, timeFrom:String, timeTo:String, reason:String) {
         val log = ActivityLogManager.getActivityLog(context).toMutableList() //.toMutableList() to allow add the new list
 
-        //log.add(ActivityLogData(date, "Request OT","OT Date: $reqDate, From Time: $timeFrom, To Time: $timeTo, Reason: $reason"))
         log.add(ActivityLogManager.createLog(date, "Request OT","OT Date: $reqDate, From Time: $timeFrom, To Time: $timeTo, Reason: $reason"))
         ActivityLogManager.putActivityLog(context, log)
     }

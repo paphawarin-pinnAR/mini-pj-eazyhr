@@ -10,7 +10,7 @@ object ActivityLogManager {
 
     fun putActivityLog(context: Context, logs: List<ActivityLogData>) {
         val sharedPref = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
-        val gson = Gson().toJson(logs) //Gson is a class from Google lib //convert Object (List<ActivitiyLogData>) to JSON String
+        val gson = Gson().toJson(logs) //Gson is a class from Google lib //convert Object (List<ActivityLogData>) to JSON String
         val editor = sharedPref.edit()
         editor.putString(PREFS_LOGS, gson)
         editor.apply()
@@ -26,7 +26,6 @@ object ActivityLogManager {
 
         return arrayList
     }
-
 
     fun typeOrder(type: String): Int {
         return when (type.lowercase()) {
@@ -44,11 +43,5 @@ object ActivityLogManager {
         val priority = typeOrder(type)
         return ActivityLogData(date, type, detail, priority)
     }
-
-//for the related fragment
-//    fun addActivityLog(context: Context, newLog: ActivityLogData) {
-//        val logs = getActivityLog(context)
-//        logs.add(newLog)
-//        putActivityLog(context, logs)
 
 }

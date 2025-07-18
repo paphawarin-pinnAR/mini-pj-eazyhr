@@ -1,13 +1,19 @@
-<?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
+<group android:checkableBehavior="single">
     <item
         android:id="@+id/menu_home"
-        android:title="Home"
-        />
+        android:title="Home" />
+</group>
+
+<group android:checkableBehavior="single">
     <item
         android:id="@+id/menu_request"
         android:title="Request" />
+</group>
+
+<group android:checkableBehavior="single">
     <item
         android:id="@+id/menu_activities_log"
         android:title="Activities log" />
+</group>
 </menu>
