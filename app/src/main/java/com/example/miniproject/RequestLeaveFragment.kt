@@ -131,23 +131,23 @@ class RequestLeaveFragment : Fragment() {
 
             when (selectedType) {
                 LeaveType.ANNUAL-> {
-                    Toast.makeText(requireContext(), "Annual", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(requireContext(), getString(R.string.leave_annual), Toast.LENGTH_SHORT).show()
                 }
 
                LeaveType.PRIVATE_LEAVE -> {
-                    Toast.makeText(requireContext(),"Private Leave (NP)", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(requireContext(),getString(R.string.leave_private), Toast.LENGTH_SHORT).show()
                 }
 
                 LeaveType.SICK-> {
-                    Toast.makeText(requireContext(), "Sick (P)", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(requireContext(), getString(R.string.leave_sick), Toast.LENGTH_SHORT).show()
                 }
 
                LeaveType.SPECIAL_HOLIDAY -> {
-                    Toast.makeText(requireContext(), "Special Holiday (P)", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(requireContext(), getString(R.string.leave_special_holiday), Toast.LENGTH_SHORT).show()
                 }
 
                 LeaveType.NONE -> {
-                    Toast.makeText(requireContext(), "No type selection", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(requireContext(), getString(R.string.empty_leave_item), Toast.LENGTH_SHORT).show()
                 }
             }
             checkFields()
@@ -162,19 +162,19 @@ class RequestLeaveFragment : Fragment() {
 
             when (selectedPeriod) {
                 PeriodType.AM -> {
-                    Toast.makeText(requireContext(), "AM", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(requireContext(), getString(R.string.period_am), Toast.LENGTH_SHORT).show()
                 }
 
                 PeriodType.PM -> {
-                    Toast.makeText(requireContext(),"PM", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(requireContext(),getString(R.string.period_pm), Toast.LENGTH_SHORT).show()
                 }
 
                 PeriodType.FULL_DAY -> {
-                    Toast.makeText(requireContext(), "Full Day", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(requireContext(), getString(R.string.period_full_day), Toast.LENGTH_SHORT).show()
                 }
 
                 PeriodType.NONE -> {
-                    Toast.makeText(requireContext(), "No period selection", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(requireContext(), getString(R.string.empty_period_item), Toast.LENGTH_SHORT).show()
                 }
             }
             checkFields()
@@ -204,7 +204,7 @@ class RequestLeaveFragment : Fragment() {
             editTextToDate.text.clear()
             spinnerPeriodType.setSelection(0)
             editReason.text.clear()
-            Toast.makeText(requireContext(), "The data has been applied.", Toast.LENGTH_LONG).show()
+            Toast.makeText(requireContext(), getString(R.string.toast_data_applied), Toast.LENGTH_SHORT).show()
 
             addRequestLeaveLog(requireContext(), dateFormat, leaveType, fromDate, toDate, leavePeriod, reason)
         }
@@ -215,7 +215,7 @@ class RequestLeaveFragment : Fragment() {
             editTextToDate.text.clear()
             spinnerPeriodType.setSelection(0)
             editReason.text.clear()
-            Toast.makeText(requireContext(), "The data has been deleted.", Toast.LENGTH_LONG).show()
+            Toast.makeText(requireContext(), getString(R.string.toast_data_deleted), Toast.LENGTH_SHORT).show()
         }
 
             return view

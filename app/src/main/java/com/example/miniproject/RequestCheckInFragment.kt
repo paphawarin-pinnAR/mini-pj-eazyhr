@@ -91,14 +91,14 @@ class RequestCheckInFragment : Fragment() {
           editTime.text.clear()
           editTextCheckInDate.text.clear()
 
-          Toast.makeText(requireContext(), "The data has been applied.", Toast.LENGTH_LONG).show()
+            Toast.makeText(requireContext(), getString(R.string.toast_data_applied), Toast.LENGTH_SHORT).show()
           addRequestCheckInLog(requireContext(), dateFormat, date, time)
         }
 
         btnCancel.setOnClickListener {
             editTime.text.clear()
             editTextCheckInDate.text.clear()
-            Toast.makeText(requireContext(), "The data has been deleted.", Toast.LENGTH_LONG).show()
+            Toast.makeText(requireContext(), getString(R.string.toast_data_deleted), Toast.LENGTH_SHORT).show()
         }
 
          return  view
