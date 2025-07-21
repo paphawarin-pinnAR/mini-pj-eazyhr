@@ -20,7 +20,8 @@ import com.example.miniproject.enums.LeaveType
 import com.example.miniproject.enums.PeriodType
 import com.example.miniproject.R
 import com.example.miniproject.constants.AppConstants
-import com.example.miniproject.utils.AppFormatters
+import com.example.miniproject.utils.DateTimeUtils
+import com.example.miniproject.utils.ToastUtils
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.util.Locale
@@ -132,23 +133,23 @@ class RequestLeaveFragment : Fragment() {
 
             when (selectedType) {
                 LeaveType.ANNUAL -> {
-                    Toast.makeText(requireContext(), getString(R.string.leave_annual), Toast.LENGTH_SHORT).show()
+                    ToastUtils.showToast(requireContext(), R.string.leave_annual)
                 }
 
                LeaveType.PRIVATE_LEAVE -> {
-                    Toast.makeText(requireContext(),getString(R.string.leave_private), Toast.LENGTH_SHORT).show()
+                    ToastUtils.showToast(requireContext(), R.string.leave_private)
                 }
 
                 LeaveType.SICK -> {
-                    Toast.makeText(requireContext(), getString(R.string.leave_sick), Toast.LENGTH_SHORT).show()
+                    ToastUtils.showToast(requireContext(), R.string.leave_sick)
                 }
 
                LeaveType.SPECIAL_HOLIDAY -> {
-                    Toast.makeText(requireContext(), getString(R.string.leave_special_holiday), Toast.LENGTH_SHORT).show()
+                    ToastUtils.showToast(requireContext(), R.string.leave_special_holiday)
                 }
 
                 LeaveType.NONE -> {
-                    Toast.makeText(requireContext(), getString(R.string.empty_leave_item), Toast.LENGTH_SHORT).show()
+                    ToastUtils.showToast(requireContext(), R.string.empty_leave_item)
                 }
             }
             checkFields()
@@ -163,19 +164,19 @@ class RequestLeaveFragment : Fragment() {
 
             when (selectedPeriod) {
                 PeriodType.AM -> {
-                    Toast.makeText(requireContext(), getString(R.string.period_am), Toast.LENGTH_SHORT).show()
+                    ToastUtils.showToast(requireContext(), R.string.period_am)
                 }
 
                 PeriodType.PM -> {
-                    Toast.makeText(requireContext(),getString(R.string.period_pm), Toast.LENGTH_SHORT).show()
+                    ToastUtils.showToast(requireContext(), R.string.period_pm)
                 }
 
                 PeriodType.FULL_DAY -> {
-                    Toast.makeText(requireContext(), getString(R.string.period_full_day), Toast.LENGTH_SHORT).show()
+                   ToastUtils.showToast(requireContext(), R.string.period_full_day)
                 }
 
                 PeriodType.NONE -> {
-                    Toast.makeText(requireContext(), getString(R.string.empty_period_item), Toast.LENGTH_SHORT).show()
+                    ToastUtils.showToast(requireContext(), R.string.empty_period_item)
                 }
             }
             checkFields()
@@ -183,7 +184,7 @@ class RequestLeaveFragment : Fragment() {
 
         btnSave.setOnClickListener {
             val currentDate = LocalDateTime.now()
-            val dateFormat = currentDate.format(AppFormatters.displayDate)
+            val dateFormat = currentDate.format(DateTimeUtils.displayDate)
 
             var leaveType = spinnerLeaveType.selectedItem.toString()
             var fromDate = editTextFromDate.text.toString()
@@ -205,7 +206,7 @@ class RequestLeaveFragment : Fragment() {
             editTextToDate.text.clear()
             spinnerPeriodType.setSelection(0)
             editReason.text.clear()
-            Toast.makeText(requireContext(), getString(R.string.toast_data_applied), Toast.LENGTH_SHORT).show()
+            ToastUtils.showToast(requireContext(), R.string.data_applied)
 
             addRequestLeaveLog(requireContext(), dateFormat, leaveType, fromDate, toDate, leavePeriod, reason)
         }
@@ -216,7 +217,7 @@ class RequestLeaveFragment : Fragment() {
             editTextToDate.text.clear()
             spinnerPeriodType.setSelection(0)
             editReason.text.clear()
-            Toast.makeText(requireContext(), getString(R.string.toast_data_deleted), Toast.LENGTH_SHORT).show()
+            ToastUtils.showToast(requireContext(), R.string.data_deleted)
         }
 
             return view

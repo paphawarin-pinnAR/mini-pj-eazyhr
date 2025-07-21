@@ -19,7 +19,7 @@ class RequestFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        var view = inflater.inflate(R.layout.fragment_request, container, false)
+        val view = inflater.inflate(R.layout.fragment_request, container, false)
 
         spinnerType = view.findViewById(R.id.spinner_request_type)
 
