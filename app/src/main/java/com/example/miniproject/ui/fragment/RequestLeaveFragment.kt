@@ -126,32 +126,16 @@ class RequestLeaveFragment : Fragment() {
             val editor = sharedPref.edit()
             editor.putString("leaveRequestType", typeSelected).apply()
 
-            // LeaveType.values() คือการดึง enum ทุกตัวออกมาเป็น array เพื่อใช้ .find ในการวนเช็คไทป์
+            // LeaveType.values() คือการดึง enum ทุกตัวใน LeaveType ออกมาเป็น array เพื่อใช้ .find หาค่าที่ getDisplayName(...) ตรงกับ typeSelected
             // convert the value that is selected from user in the Spinner (String) to enum LeaveType
             // use .find to find enum ที่ displayType is match typeSelected
-            val selectedType = LeaveType.values().find { it.displayType == typeSelected } ?: LeaveType.NONE
+            val selectedType = LeaveType.values().find { it.getDisplayName(context = requireContext()
+            ) == typeSelected } ?: LeaveType.NONE
 
-            when (selectedType) {
-                LeaveType.ANNUAL -> {
-                    ToastUtils.showToast(requireContext(), R.string.leave_annual)
-                }
+            // เอา enum ที่เลือก มาแสดงชื่ออีกครั้งด้วย Toast
+            val displayToast = selectedType.getDisplayName(context = requireContext())
+            Toast.makeText(requireContext(), displayToast, Toast.LENGTH_SHORT).show()
 
-               LeaveType.PRIVATE_LEAVE -> {
-                    ToastUtils.showToast(requireContext(), R.string.leave_private)
-                }
-
-                LeaveType.SICK -> {
-                    ToastUtils.showToast(requireContext(), R.string.leave_sick)
-                }
-
-               LeaveType.SPECIAL_HOLIDAY -> {
-                    ToastUtils.showToast(requireContext(), R.string.leave_special_holiday)
-                }
-
-                LeaveType.NONE -> {
-                    ToastUtils.showToast(requireContext(), R.string.empty_leave_item)
-                }
-            }
             checkFields()
         }
 
@@ -160,25 +144,12 @@ class RequestLeaveFragment : Fragment() {
             val editor = sharedPref.edit()
             editor.putString("leaveRequestPeriod", periodSelected).apply()
 
-            val selectedPeriod = PeriodType.values().find { it.displayPeriod == periodSelected } ?: PeriodType.NONE
+            val selectedPeriod = PeriodType.values().find {
+                it.getDisplayName(context=requireContext()) == periodSelected } ?: PeriodType.NONE
 
-            when (selectedPeriod) {
-                PeriodType.AM -> {
-                    ToastUtils.showToast(requireContext(), R.string.period_am)
-                }
+            val displayToast = selectedPeriod.getDisplayName(context = requireContext())
+            Toast.makeText(requireContext(), displayToast, Toast.LENGTH_SHORT).show()
 
-                PeriodType.PM -> {
-                    ToastUtils.showToast(requireContext(), R.string.period_pm)
-                }
-
-                PeriodType.FULL_DAY -> {
-                   ToastUtils.showToast(requireContext(), R.string.period_full_day)
-                }
-
-                PeriodType.NONE -> {
-                    ToastUtils.showToast(requireContext(), R.string.empty_period_item)
-                }
-            }
             checkFields()
         }
 
