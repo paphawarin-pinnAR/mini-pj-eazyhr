@@ -3,7 +3,7 @@ package com.example.miniproject.utils
 import java.time.format.DateTimeFormatter
 import java.util.Locale
 
-object AppFormatters {
+object DateTimeUtils {
     val displayDate: DateTimeFormatter =
         DateTimeFormatter.ofPattern("MMM dd, yyyy", Locale.getDefault())
 

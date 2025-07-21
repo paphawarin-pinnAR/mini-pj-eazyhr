@@ -2,20 +2,19 @@
     <string name="app_name">MiniProject</string>
 
     <!--About Toast-->
-    <string name="toast_data_applied">The data has been applied.</string>
-    <string name="toast_data_deleted">The data has been deleted.</string>
-
-    <string name="empty_leave_item">No leave type selection</string>
-    <string name="empty_period_item">No period selection</string>
+    <string name="data_applied">The data has been applied.</string>
+    <string name="data_deleted">The data has been deleted.</string>
 
     <string name="leave_annual">Annual (P)</string>
     <string name="leave_private">Private Leave (NP)</string>
     <string name="leave_sick">Sick (P)</string>
     <string name="leave_special_holiday">Special Holiday (P)</string>
+    <string name="leave_none">None</string>
 
     <string name="period_am">AM</string>
     <string name="period_pm">PM</string>
-    <string name="period_full_day">Full Day</string>
+    <string name="period_full">Full Day</string>
+    <string name="period_none">None</string>
 
     <!--About Spinner-->
     <string-array name="requestType">

@@ -15,7 +15,8 @@ import androidx.core.widget.addTextChangedListener
 import com.example.miniproject.data.manager.ActivityLogManager
 import com.example.miniproject.R
 import com.example.miniproject.constants.AppConstants
-import com.example.miniproject.utils.AppFormatters
+import com.example.miniproject.utils.DateTimeUtils
+import com.example.miniproject.utils.ToastUtils
 import java.time.DateTimeException
 import java.time.LocalDateTime
 import java.time.LocalTime
@@ -38,7 +39,7 @@ class RequestCheckInFragment : Fragment() {
     ): View? {
 
         // Inflate the layout for this fragment
-        var view = inflater.inflate(R.layout.fragment_request_check_in, container, false)
+        val view = inflater.inflate(R.layout.fragment_request_check_in, container, false)
 
         editTime = view.findViewById(R.id.edit_time)
 
@@ -73,7 +74,7 @@ class RequestCheckInFragment : Fragment() {
         btnSave.setOnClickListener {
 
         val currentDate = LocalDateTime.now()
-        val dateFormat = currentDate.format(AppFormatters.displayDate)
+        val dateFormat = currentDate.format(DateTimeUtils.displayDate)
 
         var date = editTextCheckInDate.text.toString()
         var time = editTime.text.toString()
@@ -87,15 +88,14 @@ class RequestCheckInFragment : Fragment() {
           editor.apply()
           editTime.text.clear()
           editTextCheckInDate.text.clear()
-
-            Toast.makeText(requireContext(), getString(R.string.toast_data_applied), Toast.LENGTH_SHORT).show()
+            ToastUtils.showToast(requireContext(), R.string.data_applied)
           addRequestCheckInLog(requireContext(), dateFormat, date, time)
         }
 
         btnCancel.setOnClickListener {
             editTime.text.clear()
             editTextCheckInDate.text.clear()
-            Toast.makeText(requireContext(), getString(R.string.toast_data_deleted), Toast.LENGTH_SHORT).show()
+            ToastUtils.showToast(requireContext(), R.string.data_deleted)
         }
 
          return  view
@@ -104,7 +104,7 @@ class RequestCheckInFragment : Fragment() {
 
     fun isValidTimeFormat(time: String): Boolean{
         return try {
-            val timeFormat = AppFormatters.displayTime
+            val timeFormat = DateTimeUtils.displayTime
             LocalTime.parse(time, timeFormat)  //Change time (from user) to Localtime
             true
         }

@@ -11,7 +11,7 @@ import android.widget.TextView
 import com.example.miniproject.data.manager.ActivityLogManager
 import com.example.miniproject.R
 import com.example.miniproject.constants.AppConstants
-import com.example.miniproject.utils.AppFormatters
+import com.example.miniproject.utils.DateTimeUtils
 import java.time.LocalDateTime
 import java.time.LocalTime
 import java.time.format.DateTimeFormatter
@@ -35,7 +35,7 @@ class HomeFragment : Fragment() {
 
         // Inflate the layout for this fragment
         // 1st is a layout design that I made, 2nd is the container, which is the object of the view group class here
-        var view = inflater.inflate(R.layout.fragment_home, container, false)
+        val view = inflater.inflate(R.layout.fragment_home, container, false)
 
         btnCheckInOut = view.findViewById(R.id.btnCheckInOut)
         timeCheckIn = view.findViewById(R.id.time_checkin)
@@ -46,8 +46,8 @@ class HomeFragment : Fragment() {
            isCheckedIn = !isCheckedIn //toggle
 
            val currentDate = LocalDateTime.now()
-           val dateFormat = currentDate.format(AppFormatters.displayDate)
-           val timeFormat = currentDate.format(AppFormatters.displayTime)
+           val dateFormat = currentDate.format(DateTimeUtils.displayDate)
+           val timeFormat = currentDate.format(DateTimeUtils.displayTime)
 
             if (isCheckedIn){
                 toggleBtnStatusCheckInOut()
@@ -82,7 +82,7 @@ class HomeFragment : Fragment() {
 
     fun setTextDateCheckIn() {
         val currentDate = LocalDateTime.now()
-        val currentDateCheckIn = currentDate.format(AppFormatters.displayDate)
+        val currentDateCheckIn = currentDate.format(DateTimeUtils.displayDate)
 
         val sharedPref = requireContext().getSharedPreferences(AppConstants.PREFS_NAME, Context.MODE_PRIVATE)
         val editor = sharedPref.edit()
@@ -92,7 +92,7 @@ class HomeFragment : Fragment() {
 
     fun setTextDateCheckOut() {
         val currentDate = LocalDateTime.now()
-        val currentDateCheckOut = currentDate.format(AppFormatters.displayDate)
+        val currentDateCheckOut = currentDate.format(DateTimeUtils.displayDate)
 
         val sharedPref = requireContext().getSharedPreferences(AppConstants.PREFS_NAME, Context.MODE_PRIVATE)
         val editor = sharedPref.edit()
@@ -103,7 +103,7 @@ class HomeFragment : Fragment() {
 
     fun setTextTimeCheckIn(){
         val currentTime = LocalTime.now()
-        val currentTimeCheckIn = currentTime.format(AppFormatters.displayTime)
+        val currentTimeCheckIn = currentTime.format(DateTimeUtils.displayTime)
 
         timeCheckIn.text = currentTimeCheckIn
 
@@ -117,7 +117,7 @@ class HomeFragment : Fragment() {
 
     fun setTextTimeCheckOut(){
         val  currentTime = LocalTime.now()
-        val currentTimeCheckOut = currentTime.format(AppFormatters.displayTime)
+        val currentTimeCheckOut = currentTime.format(DateTimeUtils.displayTime)
 
         timeCheckOut.text = currentTimeCheckOut
 

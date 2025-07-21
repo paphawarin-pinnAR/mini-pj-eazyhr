@@ -20,7 +20,8 @@ import com.example.miniproject.enums.LeaveType
 import com.example.miniproject.enums.PeriodType
 import com.example.miniproject.R
 import com.example.miniproject.constants.AppConstants
-import com.example.miniproject.utils.AppFormatters
+import com.example.miniproject.utils.DateTimeUtils
+import com.example.miniproject.utils.ToastUtils
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.util.Locale
@@ -125,32 +126,16 @@ class RequestLeaveFragment : Fragment() {
             val editor = sharedPref.edit()
             editor.putString("leaveRequestType", typeSelected).apply()
 
-            // LeaveType.values() คือการดึง enum ทุกตัวออกมาเป็น array เพื่อใช้ .find ในการวนเช็คไทป์
+            // LeaveType.values() คือการดึง enum ทุกตัวใน LeaveType ออกมาเป็น array เพื่อใช้ .find หาค่าที่ getDisplayName(...) ตรงกับ typeSelected
             // convert the value that is selected from user in the Spinner (String) to enum LeaveType
             // use .find to find enum ที่ displayType is match typeSelected
-            val selectedType = LeaveType.values().find { it.displayType == typeSelected } ?: LeaveType.NONE
+            val selectedType = LeaveType.values().find { it.getDisplayName(context = requireContext()
+            ) == typeSelected } ?: LeaveType.NONE
 
-            when (selectedType) {
-                LeaveType.ANNUAL -> {
-                    Toast.makeText(requireContext(), getString(R.string.leave_annual), Toast.LENGTH_SHORT).show()
-                }
+            // เอา enum ที่เลือก มาแสดงชื่ออีกครั้งด้วย Toast
+            val displayToast = selectedType.getDisplayName(context = requireContext())
+            Toast.makeText(requireContext(), displayToast, Toast.LENGTH_SHORT).show()
 
-               LeaveType.PRIVATE_LEAVE -> {
-                    Toast.makeText(requireContext(),getString(R.string.leave_private), Toast.LENGTH_SHORT).show()
-                }
-
-                LeaveType.SICK -> {
-                    Toast.makeText(requireContext(), getString(R.string.leave_sick), Toast.LENGTH_SHORT).show()
-                }
-
-               LeaveType.SPECIAL_HOLIDAY -> {
-                    Toast.makeText(requireContext(), getString(R.string.leave_special_holiday), Toast.LENGTH_SHORT).show()
-                }
-
-                LeaveType.NONE -> {
-                    Toast.makeText(requireContext(), getString(R.string.empty_leave_item), Toast.LENGTH_SHORT).show()
-                }
-            }
             checkFields()
         }
 
@@ -159,31 +144,18 @@ class RequestLeaveFragment : Fragment() {
             val editor = sharedPref.edit()
             editor.putString("leaveRequestPeriod", periodSelected).apply()
 
-            val selectedPeriod = PeriodType.values().find { it.displayPeriod == periodSelected } ?: PeriodType.NONE
+            val selectedPeriod = PeriodType.values().find {
+                it.getDisplayName(context=requireContext()) == periodSelected } ?: PeriodType.NONE
 
-            when (selectedPeriod) {
-                PeriodType.AM -> {
-                    Toast.makeText(requireContext(), getString(R.string.period_am), Toast.LENGTH_SHORT).show()
-                }
+            val displayToast = selectedPeriod.getDisplayName(context = requireContext())
+            Toast.makeText(requireContext(), displayToast, Toast.LENGTH_SHORT).show()
 
-                PeriodType.PM -> {
-                    Toast.makeText(requireContext(),getString(R.string.period_pm), Toast.LENGTH_SHORT).show()
-                }
-
-                PeriodType.FULL_DAY -> {
-                    Toast.makeText(requireContext(), getString(R.string.period_full_day), Toast.LENGTH_SHORT).show()
-                }
-
-                PeriodType.NONE -> {
-                    Toast.makeText(requireContext(), getString(R.string.empty_period_item), Toast.LENGTH_SHORT).show()
-                }
-            }
             checkFields()
         }
 
         btnSave.setOnClickListener {
             val currentDate = LocalDateTime.now()
-            val dateFormat = currentDate.format(AppFormatters.displayDate)
+            val dateFormat = currentDate.format(DateTimeUtils.displayDate)
 
             var leaveType = spinnerLeaveType.selectedItem.toString()
             var fromDate = editTextFromDate.text.toString()
@@ -205,7 +177,7 @@ class RequestLeaveFragment : Fragment() {
             editTextToDate.text.clear()
             spinnerPeriodType.setSelection(0)
             editReason.text.clear()
-            Toast.makeText(requireContext(), getString(R.string.toast_data_applied), Toast.LENGTH_SHORT).show()
+            ToastUtils.showToast(requireContext(), R.string.data_applied)
 
             addRequestLeaveLog(requireContext(), dateFormat, leaveType, fromDate, toDate, leavePeriod, reason)
         }
@@ -216,7 +188,7 @@ class RequestLeaveFragment : Fragment() {
             editTextToDate.text.clear()
             spinnerPeriodType.setSelection(0)
             editReason.text.clear()
-            Toast.makeText(requireContext(), getString(R.string.toast_data_deleted), Toast.LENGTH_SHORT).show()
+            ToastUtils.showToast(requireContext(), R.string.data_deleted)
         }
 
             return view
