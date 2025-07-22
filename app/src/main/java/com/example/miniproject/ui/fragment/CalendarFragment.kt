@@ -29,8 +29,19 @@ class CalendarFragment : DialogFragment() {
         // Inflate the layout for this fragment
          val view = inflater.inflate(R.layout.fragment_calendar, container, false)
 
-        calendarView = view.findViewById(R.id.calendarView)
+        // Initialize views
+         initViews(view)
 
+         setupDateChangeListener()
+
+        return view
+    }
+
+    private fun initViews(view: View){
+        calendarView = view.findViewById(R.id.calendarView)
+    }
+
+    private fun setupDateChangeListener(){
         calendarView.setOnDateChangeListener { _, year, month, dayOfMonth ->
             // create calendar object
             val calendar = Calendar.getInstance().apply {
@@ -48,9 +59,7 @@ class CalendarFragment : DialogFragment() {
             parentFragmentManager.setFragmentResult(resultKey, bundle)
             dismiss()
 
-            }
-
-        return view
+        }
     }
 
 }

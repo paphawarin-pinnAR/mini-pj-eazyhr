@@ -21,19 +21,22 @@ class RequestFragment : Fragment() {
     ): View? {
         val view = inflater.inflate(R.layout.fragment_request, container, false)
 
-        spinnerType = view.findViewById(R.id.spinner_request_type)
+        // Initialize views
+        initViews(view)
 
+        setupItemSelectedListener()
+        return view
+    }
+
+    private fun initViews(view: View){
+        spinnerType = view.findViewById(R.id.spinner_request_type)
+    }
+
+    private fun setupItemSelectedListener(){
         //get type from string.xml
         val items = resources.getStringArray(R.array.requestType)
 
-        var arrayAdapter = ArrayAdapter.createFromResource(
-            requireContext(),
-            R.array.requestType,
-            android.R.layout.simple_spinner_item
-        )
-
-        arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-        spinnerType.adapter = arrayAdapter
+        setupArrayAdapterFromRes(items)
 
         spinnerType.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(
@@ -65,9 +68,20 @@ class RequestFragment : Fragment() {
             override fun onNothingSelected(parent: AdapterView<*>) {}
 
         }
-
-        return view
     }
+
+    private fun setupArrayAdapterFromRes(items: Array<String>) {
+        val arrayAdapter = ArrayAdapter.createFromResource(
+            requireContext(),
+            R.array.requestType,
+            android.R.layout.simple_spinner_item
+        )
+
+        arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+
+        spinnerType.adapter = arrayAdapter
+    }
+
 }
 
 

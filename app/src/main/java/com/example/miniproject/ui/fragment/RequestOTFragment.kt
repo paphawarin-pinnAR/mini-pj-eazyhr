@@ -141,7 +141,7 @@ class RequestOTFragment : Fragment() {
          }
      }
 
-    fun isValidTimeFormat(time: String): Boolean{
+    private fun isValidTimeFormat(time: String): Boolean{
         return try {
             val timeFormat = DateTimeUtils.displayTime
             LocalTime.parse(time, timeFormat)  //Change time (from user) to Localtime
@@ -155,10 +155,10 @@ class RequestOTFragment : Fragment() {
     private fun checkFields(){
         val hasDate = editTextOTDate.text.isNotBlank()
         val hasReason = editReason.text.isNotBlank()
-        val TimeFromTextInput = editTextFromTime.text.toString()
-        val TimeToTextInput = editTextToTime.text.toString()
-        val hasValidTimeFrom = isValidTimeFormat(TimeFromTextInput)
-        val hasValidTimeTo = isValidTimeFormat(TimeToTextInput)
+        val timeFromTextInput = editTextFromTime.text.toString()
+        val timeToTextInput = editTextToTime.text.toString()
+        val hasValidTimeFrom = isValidTimeFormat(timeFromTextInput)
+        val hasValidTimeTo = isValidTimeFormat(timeToTextInput)
 
         if(hasDate && hasValidTimeFrom && hasValidTimeTo && hasReason) {
             btnSave.isEnabled = true
@@ -189,7 +189,6 @@ class RequestOTFragment : Fragment() {
             checkFields()
         }
     }
-
 
     private fun saveToPreferences(date: String,fromTime:String,toTime: String,reason: String, isBreakTimeChecked: Boolean){
         val sharedPref = requireActivity().getSharedPreferences(AppConstants.PREFS_NAME, Context.MODE_PRIVATE)
@@ -227,7 +226,6 @@ class RequestOTFragment : Fragment() {
             clearFields()
             ToastUtils.showToast(requireContext(), R.string.data_deleted)
         }
-
     }
 }
 

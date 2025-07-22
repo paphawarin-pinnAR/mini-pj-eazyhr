@@ -37,17 +37,38 @@ class HomeFragment : Fragment() {
         // 1st is a layout design that I made, 2nd is the container, which is the object of the view group class here
         val view = inflater.inflate(R.layout.fragment_home, container, false)
 
+        // Initialize views
+        initViews(view)
+
+        setupButtonListeners()
+        return view
+    }
+
+    override fun onPause() {
+        super.onPause()
+        saveData()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        retrieveData()
+    }
+
+    private fun initViews(view: View){
         btnCheckInOut = view.findViewById(R.id.btnCheckInOut)
         timeCheckIn = view.findViewById(R.id.time_checkin)
         timeCheckOut = view.findViewById(R.id.time_checkout)
+    }
 
+    private fun setupButtonListeners(){
 
-       btnCheckInOut.setOnClickListener {
-           isCheckedIn = !isCheckedIn //toggle
+        btnCheckInOut.setOnClickListener {
 
-           val currentDate = LocalDateTime.now()
-           val dateFormat = currentDate.format(DateTimeUtils.displayDate)
-           val timeFormat = currentDate.format(DateTimeUtils.displayTime)
+            isCheckedIn = !isCheckedIn //toggle
+
+            val currentDate = LocalDateTime.now()
+            val dateFormat = currentDate.format(DateTimeUtils.displayDate)
+            val timeFormat = currentDate.format(DateTimeUtils.displayTime)
 
             if (isCheckedIn){
                 toggleBtnStatusCheckInOut()
@@ -64,23 +85,12 @@ class HomeFragment : Fragment() {
                 addCheckOutLog(requireContext(), dateFormat, timeFormat)
             }
 
-           saveData()
+            saveData()
         }
-
-        return view
     }
 
-    override fun onPause() {
-        super.onPause()
-        saveData()
-    }
 
-    override fun onResume() {
-        super.onResume()
-        retrieveData()
-    }
-
-    fun setTextDateCheckIn() {
+    private fun setTextDateCheckIn() {
         val currentDate = LocalDateTime.now()
         val currentDateCheckIn = currentDate.format(DateTimeUtils.displayDate)
 
@@ -90,7 +100,7 @@ class HomeFragment : Fragment() {
         editor.apply()
     }
 
-    fun setTextDateCheckOut() {
+    private fun setTextDateCheckOut() {
         val currentDate = LocalDateTime.now()
         val currentDateCheckOut = currentDate.format(DateTimeUtils.displayDate)
 
@@ -101,7 +111,7 @@ class HomeFragment : Fragment() {
     }
 
 
-    fun setTextTimeCheckIn(){
+    private fun setTextTimeCheckIn(){
         val currentTime = LocalTime.now()
         val currentTimeCheckIn = currentTime.format(DateTimeUtils.displayTime)
 
@@ -115,7 +125,7 @@ class HomeFragment : Fragment() {
 
     }
 
-    fun setTextTimeCheckOut(){
+    private fun setTextTimeCheckOut(){
         val  currentTime = LocalTime.now()
         val currentTimeCheckOut = currentTime.format(DateTimeUtils.displayTime)
 
@@ -127,7 +137,7 @@ class HomeFragment : Fragment() {
         editor.apply()
     }
 
-    fun saveData(){
+    private fun saveData(){
         val sharedPref = requireActivity().getSharedPreferences(AppConstants.PREFS_NAME, Context.MODE_PRIVATE)
 
         timeCheckedIn = timeCheckIn.text.toString()
@@ -141,7 +151,7 @@ class HomeFragment : Fragment() {
         editor.apply()
     }
 
-    fun retrieveData(){
+    private fun retrieveData(){
         val sharedPref = requireActivity().getSharedPreferences(AppConstants.PREFS_NAME, Context.MODE_PRIVATE)
         timeCheckedIn = sharedPref.getString("checkInTime", "xx:xx")
         timeCheckedOut = sharedPref.getString("checkOutTime", "xx:xx")
@@ -152,7 +162,7 @@ class HomeFragment : Fragment() {
         timeCheckOut.setText(timeCheckedOut)
     }
 
-    fun toggleBtnStatusCheckInOut(){
+    private fun toggleBtnStatusCheckInOut(){
            if (isCheckedIn){
                btnCheckInOut.text = "Check Out"
                btnCheckInOut.setBackgroundResource(R.drawable.bg_button_check_out)
@@ -163,7 +173,7 @@ class HomeFragment : Fragment() {
             }
     }
 
-    fun addCheckInLog (context: Context, date:String, time:String) {
+    private fun addCheckInLog (context: Context, date:String, time:String) {
         val log = ActivityLogManager.getActivityLog(context).toMutableList() //.toMutableList() to allow add the new list
 
         log.add(ActivityLogManager.createLog(date, "Check-in", "Check-in: $time")) //add new log
@@ -173,7 +183,7 @@ class HomeFragment : Fragment() {
         ) //save log in sharedPreference as JSON format
     }
 
-    fun addCheckOutLog (context: Context, date:String, time:String) {
+    private fun addCheckOutLog (context: Context, date:String, time:String) {
         val log = ActivityLogManager.getActivityLog(context).toMutableList() //.toMutableList() to allow add the new list
 
         log.add(ActivityLogManager.createLog(date, "Check-out", "Check-out: $time"))
