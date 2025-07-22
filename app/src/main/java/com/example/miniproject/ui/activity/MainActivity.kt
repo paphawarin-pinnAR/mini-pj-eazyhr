@@ -30,25 +30,34 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContentView(R.layout.activity_main)
-
         //Load 1st fragment in the MainActivity
         if(savedInstanceState == null){
             supportFragmentManager.beginTransaction()
                 .replace(R.id.frame, HomeFragment())
                 .commit()
         }
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
+            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
+            insets
+        }
 
+        initViews()
+        setupToolbarListener()
+        setupNavigationItemSelectedListener()
+        setTextDate()
+    }
+
+   private fun initViews(){
         drawer_layout = findViewById(R.id.drawer_layout)
         toolbar = findViewById(R.id.toolbar)
         navigationMenu = findViewById(R.id.nav_menu)
         date = findViewById(R.id.txt_date)
+    }
 
-        toolbar.setNavigationOnClickListener {
-            drawer_layout.openDrawer(GravityCompat.START)
-        }
-
+    private fun setupNavigationItemSelectedListener(){
         navigationMenu.setNavigationItemSelectedListener { menuItem -> menuItem.isChecked = true
-        drawer_layout.closeDrawer(GravityCompat.START)
+            drawer_layout.closeDrawer(GravityCompat.START)
 
             //check the current fragment
             val currentFragment = supportFragmentManager.findFragmentById(R.id.frame)
@@ -73,24 +82,21 @@ class MainActivity : AppCompatActivity() {
 
             true
         }
+    }
 
-        setTextDate()
-
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
-            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
-            insets
+    private fun setupToolbarListener(){
+        toolbar.setNavigationOnClickListener {
+            drawer_layout.openDrawer(GravityCompat.START)
         }
     }
 
-
-     fun replaceFragment(fragment: androidx.fragment.app.Fragment) {
+    private fun replaceFragment(fragment: androidx.fragment.app.Fragment) {
         supportFragmentManager.beginTransaction()
             .replace(R.id.frame, fragment)
             .commit()
     }
 
-     fun setTextDate() {
+    private fun setTextDate() {
          val currentDate = LocalDateTime.now()
          date.text = currentDate.format(DateTimeUtils.displayDate)
     }

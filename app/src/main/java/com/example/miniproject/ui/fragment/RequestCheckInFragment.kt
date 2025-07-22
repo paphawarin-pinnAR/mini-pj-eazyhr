@@ -33,7 +33,6 @@ class RequestCheckInFragment : Fragment() {
     private lateinit var editTextCheckInDate : EditText
 
     override fun onCreateView(
-
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
@@ -41,6 +40,28 @@ class RequestCheckInFragment : Fragment() {
         // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_request_check_in, container, false)
 
+        // Initialize views
+        initViews(view)
+
+        // Set default save button state
+        btnSave.isEnabled = false
+
+        // Set up fragment result listener
+        setupFragmentResultListener()
+
+        // Set up calendar icon listener
+        setupCalendarIconListener()
+
+        // Set up text change listeners for validation
+        setupTextChangeListeners()
+
+        // Set up button listeners
+        setupButtonListeners()
+
+         return  view
+    }
+
+    private fun initViews(view: View){
         editTime = view.findViewById(R.id.edit_time)
 
         btnSave = view.findViewById(R.id.btn_save)
@@ -49,15 +70,17 @@ class RequestCheckInFragment : Fragment() {
         editTextCheckInDate = view.findViewById(R.id.editTextCheckInDate)
         icCalendarCheckInDate = view.findViewById(R.id.imageCheckInDate)
 
-        //set disable default for the "SAVE" button
-        btnSave.isEnabled = false
+    }
 
+    private fun setupFragmentResultListener(){
         parentFragmentManager.setFragmentResultListener("checkInDate", viewLifecycleOwner){ _, bundle ->
             val selectedDate = bundle.getString("selectedDate")
             editTextCheckInDate.setText(selectedDate)
             checkFields()
         }
+    }
 
+    private fun setupCalendarIconListener(){
         icCalendarCheckInDate.setOnClickListener {
             val calendarDialog = CalendarFragment().apply {
                 arguments = Bundle().apply {
@@ -66,43 +89,49 @@ class RequestCheckInFragment : Fragment() {
             }
             calendarDialog.show(parentFragmentManager,"checkInDateField")
         }
+    }
 
+    private fun setupTextChangeListeners() {
         editTime.addTextChangedListener {
             checkFields()
         }
+    }
 
+    private fun saveToPreference(date: String, time: String, isCheckedIn:Boolean) {
+        val sharedPref = requireActivity().getSharedPreferences(AppConstants.PREFS_NAME, Context.MODE_PRIVATE)
+        val editor = sharedPref.edit()
+        editor.putString("checkInDate", date)
+        editor.putString("checkInTime", time)
+        editor.putBoolean("isCheckedIn", isCheckedIn)
+
+        editor.apply()
+    }
+
+    private fun setupButtonListeners() {
+        //Save button
         btnSave.setOnClickListener {
 
-        val currentDate = LocalDateTime.now()
-        val dateFormat = currentDate.format(DateTimeUtils.displayDate)
+            val currentDate = LocalDateTime.now()
+            val dateFormat = currentDate.format(DateTimeUtils.displayDate)
 
-        var date = editTextCheckInDate.text.toString()
-        var time = editTime.text.toString()
+            val date = editTextCheckInDate.text.toString()
+            val time = editTime.text.toString()
 
-          val sharedPref = requireActivity().getSharedPreferences(AppConstants.PREFS_NAME, Context.MODE_PRIVATE)
-          val editor = sharedPref.edit()
-          editor.putString("checkInDate", date)
-          editor.putString("checkInTime", time)
-          editor.putBoolean("isCheckedIn", true)
-
-          editor.apply()
-          editTime.text.clear()
-          editTextCheckInDate.text.clear()
+            saveToPreference(date,time, true)
+            clearFields()
             ToastUtils.showToast(requireContext(), R.string.data_applied)
-          addRequestCheckInLog(requireContext(), dateFormat, date, time)
+            addRequestCheckInLog(requireContext(), dateFormat, date, time)
         }
 
+        //Cancel button
         btnCancel.setOnClickListener {
-            editTime.text.clear()
-            editTextCheckInDate.text.clear()
+            clearFields()
             ToastUtils.showToast(requireContext(), R.string.data_deleted)
         }
 
-         return  view
     }
 
-
-    fun isValidTimeFormat(time: String): Boolean{
+    private fun isValidTimeFormat(time: String): Boolean{
         return try {
             val timeFormat = DateTimeUtils.displayTime
             LocalTime.parse(time, timeFormat)  //Change time (from user) to Localtime
@@ -113,7 +142,7 @@ class RequestCheckInFragment : Fragment() {
          }
     }
 
-    fun checkFields(){
+    private fun checkFields(){
         val hasDate = editTextCheckInDate.text.isNotBlank()
         val timeTextInput= editTime.text.toString()
         val hasValidTime = isValidTimeFormat(timeTextInput)
@@ -125,11 +154,10 @@ class RequestCheckInFragment : Fragment() {
         else {
             btnSave.isEnabled = false
             btnSave.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.gray))
-
         }
     }
 
-    fun addRequestCheckInLog (context: Context, date:String, reqDate:String , time:String) {
+    private fun addRequestCheckInLog (context: Context, date:String, reqDate:String , time:String) {
         val log = ActivityLogManager.getActivityLog(context).toMutableList() //.toMutableList() to allow add the new list
 
         log.add(
@@ -140,6 +168,11 @@ class RequestCheckInFragment : Fragment() {
             )
         )
         ActivityLogManager.putActivityLog(context, log)
+    }
+
+    private fun clearFields() {
+        editTime.text.clear()
+        editTextCheckInDate.text.clear()
     }
 
 }

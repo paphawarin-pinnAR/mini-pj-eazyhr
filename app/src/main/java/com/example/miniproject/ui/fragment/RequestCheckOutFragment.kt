@@ -37,21 +37,66 @@ class RequestCheckOutFragment : Fragment() {
         // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_request_check_out, container, false)
 
+        // Initialize views
+        initViews(view)
+
+        //set disable default for the "SAVE" button
+        btnSave.isEnabled = false
+
+        // Set up fragment result listener
+        setupFragmentResultListener()
+
+        // Set up calendar icon listener
+        setupCalendarIconListener()
+
+        // Set up text change listeners for validation
+        setupTextChangeListeners()
+
+        // Set up button listeners
+        setupButtonListeners()
+
+        return view
+    }
+
+    private fun initViews(view: View){
         editTextCheckOutDate = view.findViewById(R.id.editTextCheckOutDate)
         icCalendarCheckOutDate = view.findViewById(R.id.imageCheckOutDate)
         editTime = view.findViewById(R.id.edit_time)
         btnSave = view.findViewById(R.id.btn_save)
         btnCancel = view.findViewById(R.id.btn_cancel)
+    }
 
-        //set disable default for the "SAVE" button
-        btnSave.isEnabled = false
+    private fun setupButtonListeners(){
+        //Save button
+        btnSave.setOnClickListener {
+            val currentDate = LocalDateTime.now()
+            val dateFormat = currentDate.format(DateTimeUtils.displayDate)
 
+            val date = editTextCheckOutDate.text.toString()
+            val time = editTime.text.toString()
+
+            saveToPreference(date,time,false)
+            clearFields()
+            addRequestCheckOutLog(requireContext(), dateFormat, date, time)
+
+            ToastUtils.showToast(requireContext(),R.string.data_applied)
+        }
+        //Cancel button
+        btnCancel.setOnClickListener {
+            clearFields()
+            ToastUtils.showToast(requireContext(),R.string.data_deleted)
+        }
+    }
+
+    private fun setupFragmentResultListener() {
         parentFragmentManager.setFragmentResultListener("checkOutDate", viewLifecycleOwner){ _, bundle ->
             val selectedDate = bundle.getString("selectedDate")
             editTextCheckOutDate.setText(selectedDate)
             checkFields()
         }
+    }
 
+    private fun setupCalendarIconListener(){
         icCalendarCheckOutDate.setOnClickListener {
             val calendarDialog = CalendarFragment().apply {
                 arguments = Bundle().apply {
@@ -61,42 +106,24 @@ class RequestCheckOutFragment : Fragment() {
             calendarDialog.show(parentFragmentManager,"checkOutDateField")
         }
 
+    }
+
+    private fun setupTextChangeListeners() {
         editTime.addTextChangedListener {
             checkFields()
         }
-
-
-        btnSave.setOnClickListener {
-            val currentDate = LocalDateTime.now()
-            val dateFormat = currentDate.format(DateTimeUtils.displayDate)
-
-            var date = editTextCheckOutDate.text.toString()
-            var time = editTime.text.toString()
-
-            val sharedPref = requireActivity().getSharedPreferences(AppConstants.PREFS_NAME, Context.MODE_PRIVATE)
-            val editor = sharedPref.edit()
-            editor.putString("checkOutDate", date)
-            editor.putString("checkOutTime", time)
-            editor.putBoolean("isCheckedIn", false)
-
-            editor.apply()
-            editTime.text.clear()
-            editTextCheckOutDate.text.clear()
-            addRequestCheckOutLog(requireContext(), dateFormat, date, time)
-
-            ToastUtils.showToast(requireContext(),R.string.data_applied)
-        }
-
-           btnCancel.setOnClickListener {
-               editTime.text.clear()
-               editTextCheckOutDate.text.clear()
-               ToastUtils.showToast(requireContext(),R.string.data_deleted)
-        }
-
-        return view
     }
 
-    fun isValidTimeFormat(time: String): Boolean{
+    private fun saveToPreference(date: String, time: String, isCheckedIn: Boolean) {
+        val sharedPref = requireActivity().getSharedPreferences(AppConstants.PREFS_NAME, Context.MODE_PRIVATE)
+        val editor = sharedPref.edit()
+        editor.putString("checkOutDate", date)
+        editor.putString("checkOutTime", time)
+        editor.putBoolean("isCheckedIn", isCheckedIn)
+        editor.apply()
+    }
+
+    private fun isValidTimeFormat(time: String): Boolean{
         return try {
             val timeFormat = DateTimeUtils.displayTime
             LocalTime.parse(time, timeFormat)  //Change time (from user) to Localtime
@@ -107,7 +134,7 @@ class RequestCheckOutFragment : Fragment() {
         }
     }
 
-    fun checkFields(){
+    private fun checkFields(){
         val hasDate = editTextCheckOutDate.text.isNotBlank()
         val timeTextInput= editTime.text.toString()
         val hasValidTime = isValidTimeFormat(timeTextInput)
@@ -124,7 +151,7 @@ class RequestCheckOutFragment : Fragment() {
 
     }
 
-    fun addRequestCheckOutLog (context: Context, date:String, reqDate:String, time:String) {
+    private fun addRequestCheckOutLog (context: Context, date:String, reqDate:String, time:String) {
         val log = ActivityLogManager.getActivityLog(context).toMutableList() //.toMutableList() to allow add the new list
 
         log.add(
@@ -135,6 +162,11 @@ class RequestCheckOutFragment : Fragment() {
             )
         )
         ActivityLogManager.putActivityLog(context, log)
+    }
+
+    private fun clearFields() {
+        editTime.text.clear()
+        editTextCheckOutDate.text.clear()
     }
 
 

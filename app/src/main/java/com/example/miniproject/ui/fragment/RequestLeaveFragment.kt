@@ -45,6 +45,28 @@ class RequestLeaveFragment : Fragment() {
         // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_request_leave, container, false)
 
+        // Initialize views
+        initViews(view)
+
+        //set disable default for the "SAVE" button
+        btnSave.isEnabled = false
+
+        // Set up fragment result listener
+        setupFragmentResultListener()
+
+        // Set up calendar icon listener
+        setupCalendarIconLister()
+
+        setupSpinners()
+
+        setupTextChangeListeners()
+
+        setupButtonListener()
+
+        return view
+    }
+
+    private fun initViews(view: View) {
         spinnerLeaveType = view.findViewById(R.id.spinner_leave_type)
         icCalendarFromDate = view.findViewById(R.id.imageLeaveFromDate)
         icCalendarToDate = view.findViewById(R.id.imageLeaveToDate)
@@ -54,10 +76,59 @@ class RequestLeaveFragment : Fragment() {
         editReason = view.findViewById(R.id.editTextReason)
         btnSave = view.findViewById(R.id.btn_save)
         btnCancel = view.findViewById(R.id.btn_cancel)
+    }
 
-        //set disable default for the "SAVE" button
-        btnSave.isEnabled = false
+    private fun clearFields() {
+        spinnerLeaveType.setSelection(0)
+        editTextFromDate.text.clear()
+        editTextToDate.text.clear()
+        spinnerPeriodType.setSelection(0)
+        editReason.text.clear()
+    }
 
+    private fun setupSpinners() {
+        //get type from string.xml
+        val leaveTypeList = resources.getStringArray(R.array.leaveType).toList()
+        val periodTypeList = resources.getStringArray(R.array.periodType).toList()
+
+        setupSpinnerItemSelectedListener(spinnerLeaveType, leaveTypeList) { typeSelected ->
+            val sharedPref = requireContext().getSharedPreferences(AppConstants.PREFS_NAME, Context.MODE_PRIVATE)
+            val editor = sharedPref.edit()
+            editor.putString("leaveRequestType", typeSelected).apply()
+
+            // LeaveType.values() คือการดึง enum ทุกตัวใน LeaveType ออกมาเป็น array เพื่อใช้ .find หาค่าที่ getDisplayName(...) ตรงกับ typeSelected
+            // convert the value that is selected from user in the Spinner (String) to enum LeaveType
+            // use .find to find enum ที่ displayType is match typeSelected
+            val selectedType = LeaveType.values().find {
+                it.getDisplayName(
+                    context = requireContext()
+                ) == typeSelected
+            } ?: LeaveType.NONE
+
+            // เอา enum ที่เลือก มาแสดงชื่ออีกครั้งด้วย Toast
+            val displayToast = selectedType.getDisplayName(context = requireContext())
+            Toast.makeText(requireContext(), displayToast, Toast.LENGTH_SHORT).show()
+
+            checkFields()
+        }
+
+        setupSpinnerItemSelectedListener(spinnerPeriodType, periodTypeList) { periodSelected ->
+            val sharedPref = requireContext().getSharedPreferences(AppConstants.PREFS_NAME, Context.MODE_PRIVATE)
+            val editor = sharedPref.edit()
+            editor.putString("leaveRequestPeriod", periodSelected).apply()
+
+            val selectedPeriod = PeriodType.values().find {
+                it.getDisplayName(context = requireContext()) == periodSelected
+            } ?: PeriodType.NONE
+
+            val displayToast = selectedPeriod.getDisplayName(context = requireContext())
+            Toast.makeText(requireContext(), displayToast, Toast.LENGTH_SHORT).show()
+
+            checkFields()
+        }
+    }
+
+    private fun setupFragmentResultListener(){
         parentFragmentManager.setFragmentResultListener(
             "fromDate",
             viewLifecycleOwner
@@ -72,7 +143,9 @@ class RequestLeaveFragment : Fragment() {
             editTextToDate.setText(selectedDate)
             checkFields()
         }
+    }
 
+    private fun setupCalendarIconLister(){
         icCalendarFromDate.setOnClickListener {
             val calendarDialog = CalendarFragment().apply {
                 arguments = Bundle().apply {
@@ -104,7 +177,9 @@ class RequestLeaveFragment : Fragment() {
                 "toDateField"
             ) // "calendarDialog" is Tag name (Optional) using for find the dialog
         }
+    }
 
+    private fun setupTextChangeListeners() {
         editTextFromDate.addTextChangedListener {
             checkFields()
         }
@@ -116,86 +191,13 @@ class RequestLeaveFragment : Fragment() {
         editReason.addTextChangedListener {
             checkFields()
         }
-
-        //get type from string.xml
-        val leaveTypeList = resources.getStringArray(R.array.leaveType).toList()
-        val periodTypeList = resources.getStringArray(R.array.periodType).toList()
-
-        setupSpinner(spinnerLeaveType, leaveTypeList) { typeSelected ->
-            val sharedPref = requireContext().getSharedPreferences(AppConstants.PREFS_NAME, Context.MODE_PRIVATE)
-            val editor = sharedPref.edit()
-            editor.putString("leaveRequestType", typeSelected).apply()
-
-            // LeaveType.values() คือการดึง enum ทุกตัวใน LeaveType ออกมาเป็น array เพื่อใช้ .find หาค่าที่ getDisplayName(...) ตรงกับ typeSelected
-            // convert the value that is selected from user in the Spinner (String) to enum LeaveType
-            // use .find to find enum ที่ displayType is match typeSelected
-            val selectedType = LeaveType.values().find { it.getDisplayName(context = requireContext()
-            ) == typeSelected } ?: LeaveType.NONE
-
-            // เอา enum ที่เลือก มาแสดงชื่ออีกครั้งด้วย Toast
-            val displayToast = selectedType.getDisplayName(context = requireContext())
-            Toast.makeText(requireContext(), displayToast, Toast.LENGTH_SHORT).show()
-
-            checkFields()
-        }
-
-        setupSpinner(spinnerPeriodType, periodTypeList) { periodSelected ->
-            val sharedPref = requireContext().getSharedPreferences(AppConstants.PREFS_NAME, Context.MODE_PRIVATE)
-            val editor = sharedPref.edit()
-            editor.putString("leaveRequestPeriod", periodSelected).apply()
-
-            val selectedPeriod = PeriodType.values().find {
-                it.getDisplayName(context=requireContext()) == periodSelected } ?: PeriodType.NONE
-
-            val displayToast = selectedPeriod.getDisplayName(context = requireContext())
-            Toast.makeText(requireContext(), displayToast, Toast.LENGTH_SHORT).show()
-
-            checkFields()
-        }
-
-        btnSave.setOnClickListener {
-            val currentDate = LocalDateTime.now()
-            val dateFormat = currentDate.format(DateTimeUtils.displayDate)
-
-            var leaveType = spinnerLeaveType.selectedItem.toString()
-            var fromDate = editTextFromDate.text.toString()
-            var toDate = editTextToDate.text.toString()
-            var leavePeriod = spinnerPeriodType.selectedItem.toString()
-            var reason = editReason.text.toString()
-
-            val sharedPref = requireActivity().getSharedPreferences(AppConstants.PREFS_NAME, Context.MODE_PRIVATE)
-            val editor = sharedPref.edit()
-            editor.putString("leaveRequestType", leaveType) //save leaveRequestType selection into the SharedPref by using "leaveRequestType" key
-            editor.putString("leaveDateFrom", fromDate)
-            editor.putString("leaveDateTo", toDate)
-            editor.putString("leaveRequestPeriod", leavePeriod)
-            editor.putString("leaveReason", reason)
-
-            editor.apply()
-            spinnerLeaveType.setSelection(0)
-            editTextFromDate.text.clear()
-            editTextToDate.text.clear()
-            spinnerPeriodType.setSelection(0)
-            editReason.text.clear()
-            ToastUtils.showToast(requireContext(), R.string.data_applied)
-
-            addRequestLeaveLog(requireContext(), dateFormat, leaveType, fromDate, toDate, leavePeriod, reason)
-        }
-
-        btnCancel.setOnClickListener {
-            spinnerLeaveType.setSelection(0)
-            editTextFromDate.text.clear()
-            editTextToDate.text.clear()
-            spinnerPeriodType.setSelection(0)
-            editReason.text.clear()
-            ToastUtils.showToast(requireContext(), R.string.data_deleted)
-        }
-
-            return view
     }
 
-
-     fun setupSpinner(spinner: Spinner, items: List<String>, onSelect: (String) -> Unit) {
+    private fun setupSpinnerItemSelectedListener(
+        spinner: Spinner,
+        items: List<String>,
+        onSelect: (String) -> Unit
+    ) {
         spinner.adapter =
             ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, items).apply {
                 setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
@@ -212,29 +214,83 @@ class RequestLeaveFragment : Fragment() {
 
             override fun onNothingSelected(parent: AdapterView<*>) {}
         }
-     }
+    }
 
+    private fun setupButtonListener() {
+        btnSave.setOnClickListener {
+            val currentDate = LocalDateTime.now()
+            val dateFormat = currentDate.format(DateTimeUtils.displayDate)
 
-        fun checkFields() {
-            val hasFromDate = editTextFromDate.text.isNotBlank()
-            val hasToDate = editTextToDate.text.isNotBlank()
-            val hasReason = editReason.text.isNotBlank()
+            var leaveType = spinnerLeaveType.selectedItem.toString()
+            var fromDate = editTextFromDate.text.toString()
+            var toDate = editTextToDate.text.toString()
+            var leavePeriod = spinnerPeriodType.selectedItem.toString()
+            var reason = editReason.text.toString()
 
-            val hasLeaveType = spinnerLeaveType.selectedItemPosition != 0
-            val hasPeriodType = spinnerPeriodType.selectedItemPosition != 0
+            val sharedPref = requireActivity().getSharedPreferences(
+                AppConstants.PREFS_NAME,
+                Context.MODE_PRIVATE
+            )
+            val editor = sharedPref.edit()
+            editor.putString(
+                "leaveRequestType",
+                leaveType
+            ) //save leaveRequestType selection into the SharedPref by using "leaveRequestType" key
+            editor.putString("leaveDateFrom", fromDate)
+            editor.putString("leaveDateTo", toDate)
+            editor.putString("leaveRequestPeriod", leavePeriod)
+            editor.putString("leaveReason", reason)
 
-            if (hasFromDate && hasToDate && hasReason && hasLeaveType && hasPeriodType) {
-                btnSave.isEnabled = true
-                btnSave.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.green))
-            }
-            else {
-                btnSave.isEnabled = false
-                btnSave.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.gray))
-            }
+            editor.apply()
+            clearFields()
+            ToastUtils.showToast(requireContext(), R.string.data_applied)
+
+            addRequestLeaveLog(
+                requireContext(),
+                dateFormat,
+                leaveType,
+                fromDate,
+                toDate,
+                leavePeriod,
+                reason
+            )
         }
 
-    fun addRequestLeaveLog (context: Context, date:String, reqType: String, dateFrom:String, dateTo:String, period:String, reason:String) {
-        val log = ActivityLogManager.getActivityLog(context).toMutableList() //.toMutableList() to allow add the new list
+        btnCancel.setOnClickListener {
+            clearFields()
+            ToastUtils.showToast(requireContext(), R.string.data_deleted)
+        }
+
+    }
+
+    private fun checkFields() {
+        val hasFromDate = editTextFromDate.text.isNotBlank()
+        val hasToDate = editTextToDate.text.isNotBlank()
+        val hasReason = editReason.text.isNotBlank()
+
+        val hasLeaveType = spinnerLeaveType.selectedItemPosition != 0
+        val hasPeriodType = spinnerPeriodType.selectedItemPosition != 0
+
+        if (hasFromDate && hasToDate && hasReason && hasLeaveType && hasPeriodType) {
+            btnSave.isEnabled = true
+            btnSave.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.green))
+        } else {
+            btnSave.isEnabled = false
+            btnSave.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.gray))
+        }
+    }
+
+    private fun addRequestLeaveLog(
+        context: Context,
+        date: String,
+        reqType: String,
+        dateFrom: String,
+        dateTo: String,
+        period: String,
+        reason: String
+    ) {
+        val log = ActivityLogManager.getActivityLog(context)
+            .toMutableList() //.toMutableList() to allow add the new list
 
         log.add(
             ActivityLogManager.createLog(
@@ -245,7 +301,7 @@ class RequestLeaveFragment : Fragment() {
         )
         ActivityLogManager.putActivityLog(context, log)
     }
-    }
+}
 
 
 

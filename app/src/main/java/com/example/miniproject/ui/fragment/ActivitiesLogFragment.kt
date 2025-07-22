@@ -29,23 +29,22 @@ class ActivitiesLogFragment : Fragment() {
         // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_activities_log, container, false)
 
-        tableActivitiesLog = view.findViewById(R.id.tableHistory)
+        initViews(view)
         showActivitiesLog()
 
         return view
     }
 
-    fun showActivitiesLog() {
-        val displayDate = DateTimeUtils.displayDate
-        val logs = ActivityLogManager.getActivityLog(requireContext())
-        val sortedLogList = logs.sortedWith(
-            compareBy<ActivityLogData> { it.priority } //sort by low->high priority 1,2,3,..,99
-                .thenByDescending { LocalDate.parse(it.date, displayDate) }  //in case: same priority, sort by date
-                .thenBy { ActivityLogManager.typeOrder(it.type) }//in case same priority and date, sort by type order
-        )
+    private fun initViews(view: View){
+        tableActivitiesLog = view.findViewById(R.id.tableHistory)
+    }
 
-               while (tableActivitiesLog.childCount > 1) {
-           tableActivitiesLog.removeViewAt(1)
+    private fun showActivitiesLog() {
+
+        val sortedLogList = sortLogCellList()
+
+        while (tableActivitiesLog.childCount > 1) {
+            tableActivitiesLog.removeViewAt(1)
         }
 
         for (log in sortedLogList) {
@@ -62,6 +61,17 @@ class ActivitiesLogFragment : Fragment() {
             tableActivitiesLog.addView(row)
         }
 
+    }
+
+    private fun sortLogCellList () : List<ActivityLogData> {
+        val dateFormat = DateTimeUtils.displayDate
+        val logs = ActivityLogManager.getActivityLog(requireContext())
+        val sortedLogList = logs.sortedWith(
+            compareBy<ActivityLogData> { it.priority } //sort by low->high priority 1,2,3,..,99
+                .thenByDescending { LocalDate.parse(it.date, dateFormat) }  //in case: same priority, sort by date
+                .thenBy { ActivityLogManager.typeOrder(it.type) }//in case same priority and date, sort by type order
+        )
+        return sortedLogList
     }
 
     private fun createLogCellTextView (text: String): TextView {
