@@ -69,7 +69,6 @@
             android:layout_height="48dp"
             android:layout_marginStart="10dp"
             android:ems="10"
-            android:hint="MMM dd, YYYY"
             android:inputType="date"
 
             />
@@ -103,7 +102,6 @@
             android:layout_height="48dp"
             android:layout_marginStart="26dp"
             android:ems="10"
-            android:hint="MMM dd, YYYY"
             android:inputType="date"
             />
 
