@@ -47,17 +47,8 @@ class ActivitiesLogFragment : Fragment() {
             tableActivitiesLog.removeViewAt(1)
         }
 
-        for (log in sortedLogList) {
-            val row = TableRow(requireContext()) //create a new row by using the context of fragment to display the data in the table history
-
-            val dateView = createLogCellTextView(log.date)
-            val typeView = createLogCellTextView(log.type)
-            val detailView = createLogCellTextView(log.detail)
-
-            row.addView(dateView)
-            row.addView(typeView)
-            row.addView(detailView)
-
+        for ((index, log) in sortedLogList.withIndex()) {
+            val row = createLogRow(index, log)
             tableActivitiesLog.addView(row)
         }
 
@@ -75,19 +66,37 @@ class ActivitiesLogFragment : Fragment() {
     }
 
     private fun createLogCellTextView (text: String): TextView {
-        val color = ContextCompat.getColor(requireContext(), R.color.light_blue)
         return TextView(requireContext()).apply {
-           this.text = text
+            this.text = text
             textSize = 14f
             setPadding(16, 18, 16, 18)
-            setBackgroundColor(color)
-            setSingleLine(false)
+            isSingleLine = false
             maxLines = 10
             ellipsize = null
             layoutParams = TableRow.LayoutParams(
-                0, TableRow.LayoutParams.WRAP_CONTENT, 1f
+                0, TableRow.LayoutParams.MATCH_PARENT, 1f
             )
         }
+    }
+
+
+    private fun createLogRow(index: Int, log: ActivityLogData) : TableRow {
+        val row = TableRow(requireContext()) //create a new row by using the context of fragment to display the data in the table history
+
+        val colorOdd = ContextCompat.getColor(requireContext(), R.color.medium_blue)
+        val colorEven = ContextCompat.getColor(requireContext(), R.color.light_blue)
+        val backgroundColor = if(index % 2 == 0) colorOdd else colorEven
+        row.setBackgroundColor(backgroundColor)
+
+        val dateView = createLogCellTextView(log.date)
+        val typeView = createLogCellTextView(log.type)
+        val detailView = createLogCellTextView(log.detail)
+
+        row.addView(dateView)
+        row.addView(typeView)
+        row.addView(detailView)
+
+        return row
     }
 
 }
