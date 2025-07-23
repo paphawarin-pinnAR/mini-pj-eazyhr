@@ -16,6 +16,13 @@
     <string name="period_full">Full Day</string>
     <string name="period_none">None</string>
 
+
+    <string name="request_check_in">Request check-in</string>
+    <string name="request_check_out">Request check-out</string>
+    <string name="request_OT">Request OT</string>
+    <string name="request_leave">Request leave</string>
+    <string name="request_none">None</string>
+
     <!--About Spinner-->
     <string-array name="requestType">
         <item> </item>

@@ -24,19 +24,19 @@
                 android:layout_height="?attr/actionBarSize"
                 android:background="#003398"
                 app:navigationIcon="@drawable/menu_icon"
-                app:navigationIconTint="@color/white"
-                />
+                app:navigationIconTint="@color/white" />
 
             <TextView
                 android:id="@+id/txt_date"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="right"
-                android:layout_marginTop="25dp"
+                android:layout_gravity="end"
+
+                android:layout_marginTop="15dp"
                 android:layout_marginEnd="10dp"
                 android:text="24/06/2025"
                 android:textColor="@android:color/white"
-                android:textSize="21dp" />
+                android:textSize="20dp" />
 
         </FrameLayout>
 

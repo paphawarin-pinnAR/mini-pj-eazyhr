@@ -105,14 +105,20 @@ class RequestOTFragment : Fragment() {
 
         val checkInTime = sharedPref.getString("checkInTime", " ") ?: " "
         val checkOutTime = sharedPref.getString("checkOutTime", " ") ?: " "
+        val timeToDisplay = checkOutTime
 
-        val defaultTimeFrom = LocalTime.parse(checkInTime, timeFormat)
-        val plusDefaultTimeFrom = defaultTimeFrom.plusHours(9).format(timeFormat)
+        val timeFromDisplay = if(isValidTimeFormat(checkInTime)){
+            val plusDefaultTimeFrom = LocalTime.parse(checkInTime, timeFormat)
+            plusDefaultTimeFrom.plusHours(9).format(timeFormat)
+        }
+        else{
+            "xx:xx"
+        }
 
-        editTextFromTime.setText(plusDefaultTimeFrom)
-        editTextToTime.setText(checkOutTime)
+        editTextFromTime.setText(timeFromDisplay)
+        editTextToTime.setText(timeToDisplay)
 
-        return Pair(plusDefaultTimeFrom, checkOutTime)
+        return Pair(timeFromDisplay, timeToDisplay)
     }
 
      private fun setupBreakTimeCheckBox(plusDefaultTimeFrom: String, checkOutTime: String){
@@ -142,6 +148,9 @@ class RequestOTFragment : Fragment() {
      }
 
     private fun isValidTimeFormat(time: String): Boolean{
+        if(time=="xx:xx") {
+            return false
+        }
         return try {
             val timeFormat = DateTimeUtils.displayTime
             LocalTime.parse(time, timeFormat)  //Change time (from user) to Localtime
