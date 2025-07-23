@@ -9,6 +9,7 @@ import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Spinner
 import com.example.miniproject.R
+import com.example.miniproject.utils.ToastUtils
 
 
 class RequestFragment : Fragment() {
@@ -45,21 +46,35 @@ class RequestFragment : Fragment() {
                 position: Int,
                 id: Long
             ) {
+
+                if (position == 0) return
                 val typeSelected = items[position]
 
                 val fragment = when (typeSelected) {
-                    "Request check-in" -> RequestCheckInFragment()
-                    "Request check-out" ->  RequestCheckOutFragment()
-                    "Request OT" -> RequestOTFragment()
-                    "Request leave" -> RequestLeaveFragment()
+                    "Request check-in" -> {
+                        ToastUtils.showToast(requireContext(), R.string.request_check_in)
+                        RequestCheckInFragment()
+                    }
+                    "Request check-out" ->  {
+                        ToastUtils.showToast(requireContext(), R.string.request_check_out)
+                        RequestCheckOutFragment()
+                    }
+                    "Request OT" -> {
+                        ToastUtils.showToast(requireContext(), R.string.request_OT)
+                        RequestOTFragment()
+                    }
+                    "Request leave" -> {
+                        ToastUtils.showToast(requireContext(), R.string.request_leave)
+                        RequestLeaveFragment()
+                    }
                     else -> {
                         null
                     }
                 }
 
-                if (fragment != null) {
+                fragment?.let{
                     childFragmentManager.beginTransaction()
-                        .replace(R.id.frame_sub, fragment)
+                        .replace(R.id.frame_sub, it)
                         .commit()
                 }
 
