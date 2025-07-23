@@ -105,9 +105,11 @@ class RequestLeaveFragment : Fragment() {
                 ) == typeSelected
             } ?: LeaveType.NONE
 
-            // เอา enum ที่เลือก มาแสดงชื่ออีกครั้งด้วย Toast
-            val displayToast = selectedType.getDisplayName(context = requireContext())
-            Toast.makeText(requireContext(), displayToast, Toast.LENGTH_SHORT).show()
+            if(selectedType != LeaveType.NONE) {
+                // เอา enum ที่เลือก มาแสดงชื่ออีกครั้งด้วย Toast
+                val displayToast = selectedType.getDisplayName(context = requireContext())
+                Toast.makeText(requireContext(), displayToast, Toast.LENGTH_SHORT).show()
+            }
 
             checkFields()
         }
@@ -121,8 +123,11 @@ class RequestLeaveFragment : Fragment() {
                 it.getDisplayName(context = requireContext()) == periodSelected
             } ?: PeriodType.NONE
 
-            val displayToast = selectedPeriod.getDisplayName(context = requireContext())
-            Toast.makeText(requireContext(), displayToast, Toast.LENGTH_SHORT).show()
+            if(selectedPeriod != PeriodType.NONE) {
+                val displayToast = selectedPeriod.getDisplayName(context = requireContext())
+                Toast.makeText(requireContext(), displayToast, Toast.LENGTH_SHORT).show()
+
+            }
 
             checkFields()
         }
