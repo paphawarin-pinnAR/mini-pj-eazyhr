@@ -1,4 +1,4 @@
-package com.example.miniproject.ui.fragment
+package com.example.miniproject.ui.view.fragment
 
 import android.icu.util.Calendar
 import android.os.Bundle

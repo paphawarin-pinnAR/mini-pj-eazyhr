@@ -1,5 +1,6 @@
-package com.example.miniproject.ui.activity
+package com.example.miniproject.ui.view.activity
 
+import HrController
 import android.os.Bundle
 import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
@@ -9,15 +10,13 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import com.example.miniproject.R
-import com.example.miniproject.ui.fragment.ActivitiesLogFragment
-import com.example.miniproject.ui.fragment.HomeFragment
-import com.example.miniproject.ui.fragment.RequestFragment
+import com.example.miniproject.ui.view.fragment.ActivitiesLogFragment
+import com.example.miniproject.ui.view.fragment.HomeFragment
+import com.example.miniproject.ui.view.fragment.RequestFragment
 import com.example.miniproject.utils.DateTimeUtils
 import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.navigation.NavigationView
 import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
-import java.util.Locale
 
 class MainActivity : AppCompatActivity() {
 

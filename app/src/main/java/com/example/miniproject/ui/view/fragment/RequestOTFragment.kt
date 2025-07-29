@@ -1,4 +1,4 @@
-package com.example.miniproject.ui.fragment
+package com.example.miniproject.ui.view.fragment
 
 import android.content.Context
 import android.os.Bundle
@@ -10,7 +10,6 @@ import android.widget.Button
 import android.widget.CheckBox
 import android.widget.EditText
 import android.widget.ImageView
-import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.core.widget.addTextChangedListener
 import com.example.miniproject.data.manager.ActivityLogManager
@@ -21,8 +20,6 @@ import com.example.miniproject.utils.ToastUtils
 import java.time.DateTimeException
 import java.time.LocalDateTime
 import java.time.LocalTime
-import java.time.format.DateTimeFormatter
-import java.util.Locale
 
 
 class RequestOTFragment : Fragment() {

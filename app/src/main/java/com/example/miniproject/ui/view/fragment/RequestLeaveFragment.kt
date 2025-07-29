@@ -1,4 +1,4 @@
-package com.example.miniproject.ui.fragment
+package com.example.miniproject.ui.view.fragment
 
 import android.content.Context
 import android.os.Bundle
@@ -23,8 +23,6 @@ import com.example.miniproject.constants.AppConstants
 import com.example.miniproject.utils.DateTimeUtils
 import com.example.miniproject.utils.ToastUtils
 import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
-import java.util.Locale
 
 class RequestLeaveFragment : Fragment() {
     private lateinit var spinnerLeaveType: Spinner

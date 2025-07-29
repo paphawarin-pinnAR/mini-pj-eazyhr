@@ -6,7 +6,7 @@
     android:background="@color/design_default_color_surface"
     android:gravity="center_horizontal"
     android:orientation="vertical"
-    tools:context=".ui.fragment.RequestFragment"
+    tools:context=".ui.view.fragment.RequestFragment"
     >
 
     <LinearLayout

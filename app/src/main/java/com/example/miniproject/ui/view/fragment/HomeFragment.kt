@@ -1,5 +1,6 @@
-package com.example.miniproject.ui.fragment
+package com.example.miniproject.ui.view.fragment
 
+import HrController
 import android.content.Context
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -8,25 +9,29 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
+import android.widget.Toast
 import com.example.miniproject.data.manager.ActivityLogManager
 import com.example.miniproject.R
 import com.example.miniproject.constants.AppConstants
+import com.example.miniproject.data.model.User
+import com.example.miniproject.ui.view.HrView
 import com.example.miniproject.utils.DateTimeUtils
 import java.time.LocalDateTime
 import java.time.LocalTime
-import java.time.format.DateTimeFormatter
-import java.util.Locale
 
 
-class HomeFragment : Fragment() {
+class HomeFragment : Fragment(), HrView {
     lateinit var btnCheckInOut : Button
     lateinit var timeCheckIn : TextView
     lateinit var timeCheckOut :TextView
+    private lateinit var controller: HrController
 
     var isCheckedIn: Boolean = false   //button state //false=check-out, true=check-in
     var timeCheckedIn: String? = null
     var timeCheckedOut: String? = null
     var date: String? = null
+    var userId: Long = 1L              // กำหนด userId ชั่วคราว
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -37,21 +42,26 @@ class HomeFragment : Fragment() {
         // 1st is a layout design that I made, 2nd is the container, which is the object of the view group class here
         val view = inflater.inflate(R.layout.fragment_home, container, false)
 
+        // สร้าง controller โดยส่ง reference ของ activity นี้ (view) ไปด้วย // this คือ HomeFragment ที่ implement HrView
+        controller = HrController(this)
+
         // Initialize views
         initViews(view)
 
         setupButtonListeners()
+
+        // โหลดข้อมูล user จาก API
+        controller.loadUserData(userId)
+
         return view
     }
 
     override fun onPause() {
         super.onPause()
-        saveData()
     }
 
     override fun onResume() {
         super.onResume()
-        retrieveData()
     }
 
     private fun initViews(view: View){
@@ -60,32 +70,23 @@ class HomeFragment : Fragment() {
         timeCheckOut = view.findViewById(R.id.time_checkout)
     }
 
-    private fun setupButtonListeners(){
-
+    private fun setupButtonListeners() {
         btnCheckInOut.setOnClickListener {
+            isCheckedIn = !isCheckedIn
+            val now = LocalDateTime.now()
+            val dateFormat = now.format(DateTimeUtils.displayDate)
+            val timeFormat = now.format(DateTimeUtils.displayTime)
 
-            isCheckedIn = !isCheckedIn //toggle
-
-            val currentDate = LocalDateTime.now()
-            val dateFormat = currentDate.format(DateTimeUtils.displayDate)
-            val timeFormat = currentDate.format(DateTimeUtils.displayTime)
-
-            if (isCheckedIn){
+            if (isCheckedIn) {
                 toggleBtnStatusCheckInOut()
-                setTextDateCheckIn()
-                setTextTimeCheckIn()
-
+                timeCheckIn.text = timeFormat
                 addCheckInLog(requireContext(), dateFormat, timeFormat)
-            }
-            else {
+
+                controller.clockInUser(userId)  // เรียก API เช็คอิน
+            } else {
+
                 toggleBtnStatusCheckInOut()
-                setTextDateCheckOut()
-                setTextTimeCheckOut()
-
-                addCheckOutLog(requireContext(), dateFormat, timeFormat)
             }
-
-            saveData()
         }
     }
 
@@ -111,17 +112,11 @@ class HomeFragment : Fragment() {
     }
 
 
-    private fun setTextTimeCheckIn(){
+    private fun setTextTimeCheckIn(time: String){
         val currentTime = LocalTime.now()
         val currentTimeCheckIn = currentTime.format(DateTimeUtils.displayTime)
 
         timeCheckIn.text = currentTimeCheckIn
-
-       val sharedPref = requireContext().getSharedPreferences(AppConstants.PREFS_NAME, Context.MODE_PRIVATE)
-       val editor = sharedPref.edit()
-        editor.putBoolean("isCheckedIn", true)
-        editor.putString("checkInTime", currentTimeCheckIn)
-        editor.apply()
 
     }
 
@@ -188,6 +183,23 @@ class HomeFragment : Fragment() {
 
         log.add(ActivityLogManager.createLog(date, "Check-out", "Check-out: $time"))
         ActivityLogManager.putActivityLog(context, log)
+    }
+
+    override fun showLoading(isLoading: Boolean) {
+
+    }
+
+    override fun onError(message: String) {
+        Toast.makeText(requireContext(), "Error: $message", Toast.LENGTH_LONG).show()
+    }
+
+
+    override fun onClockInSuccess(clockInTime: Long?) {
+        Toast.makeText(requireContext(), "Check-in success at $clockInTime", Toast.LENGTH_SHORT).show()
+    }
+
+    override fun displayUserData(user: User?) {
+
     }
 }
 
