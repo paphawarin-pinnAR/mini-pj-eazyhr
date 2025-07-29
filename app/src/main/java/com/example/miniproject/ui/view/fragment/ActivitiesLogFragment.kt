@@ -1,7 +1,5 @@
-package com.example.miniproject.ui.fragment
+package com.example.miniproject.ui.view.fragment
 
-import android.content.Context
-import android.graphics.Color
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -17,7 +15,6 @@ import com.example.miniproject.R
 import com.example.miniproject.utils.DateTimeUtils
 
 import java.time.LocalDate
-import java.time.format.DateTimeFormatter
 
 class ActivitiesLogFragment : Fragment() {
     private lateinit var tableActivitiesLog: TableLayout
