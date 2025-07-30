@@ -23,6 +23,8 @@
     <string name="request_leave">Request leave</string>
     <string name="request_none">None</string>
 
+    <string name="no_attendance_data">There is no an Attendance data</string>
+
     <!--About Spinner-->
     <string-array name="requestType">
         <item> </item>

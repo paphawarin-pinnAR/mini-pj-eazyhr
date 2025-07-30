@@ -2,6 +2,9 @@ import android.util.Log
 import com.example.miniproject.data.model.ApiResponse
 import com.example.miniproject.data.model.ClockInData
 import com.example.miniproject.data.model.ClockInRequest
+import com.example.miniproject.data.model.ClockOutData
+import com.example.miniproject.data.model.ClockOutRequest
+import com.example.miniproject.data.network.ApiClient
 import com.example.miniproject.ui.view.HrView
 import com.google.gson.Gson
 import kotlinx.coroutines.CoroutineScope
@@ -9,20 +12,39 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-class HrController(private val view: HrView) {
+class HrController(private val view: HrView, private val repository: HrRepository) {
 
-    private val repository: HrRepository = HrRepository()
+    // private val repository: HrRepository = HrRepository(ApiClient.apiService)
     private val controllerScope = CoroutineScope(Dispatchers.Main)
 
     fun clockInUser(userId: Long) {
         controllerScope.launch {
             view.showLoading(true)
             try {
+                //เรียก Repository (repository.clockIn(userId)) ที่ใช้ Retrofit ในการยิง API ไปยัง server
                 val clockInData = repository.clockIn(ClockInRequest(userId))
                 if (clockInData != null) {
                     view.onClockInSuccess(clockInData.clockInTime)
                 } else {
                     view.onError("การลงเวลาเข้างานล้มเหลว")
+                }
+            } catch (e: Exception) {
+                view.onError("ข้อผิดพลาดเครือข่าย: ${e.message}")
+            } finally {
+                view.showLoading(false)
+            }
+        }
+    }
+
+    fun clockOutUser(userId: Long) {
+        controllerScope.launch {
+            view.showLoading(true)
+            try {
+                val clockOutData = repository.clockOut(ClockOutRequest(userId))
+                if (clockOutData != null) {
+                    view.onClockOutSuccess(clockOutData.clockOutTime)
+                } else {
+                    view.onError("การลงเวลาออกงานล้มเหลว")
                 }
             } catch (e: Exception) {
                 view.onError("ข้อผิดพลาดเครือข่าย: ${e.message}")
@@ -51,4 +73,37 @@ class HrController(private val view: HrView) {
         }
     }
 
+    fun getTodayClockIn(userId: Long) {
+        controllerScope.launch {
+            try {
+                val attendanceList = repository.getTodayAttendance()
+                val userAttendance = attendanceList?.firstOrNull()
+                if (userAttendance != null) {
+                    view.onClockInSuccess(userAttendance.clockInTime)
+                } else {
+                    view.onNoAttendanceData()
+                }
+            } catch (e: Exception) {
+                view.onError("โหลดข้อมูลล้มเหลว: ${e.message}")
+            }
+        }
+    }
+
+
+    fun getTodayClockOut(userId: Long) {
+        controllerScope.launch {
+            try {
+                val attendanceList = repository.getTodayAttendance()
+                val userAttendance = attendanceList?.firstOrNull()
+                if (userAttendance != null) {
+                    view.onClockOutSuccess(userAttendance.clockOutTime)
+                } else {
+                    view.onNoAttendanceData()
+                }
+            } catch (e: Exception) {
+                view.onError("โหลดข้อมูลล้มเหลว: ${e.message}")
+            }
+        }
+    }
 }
+

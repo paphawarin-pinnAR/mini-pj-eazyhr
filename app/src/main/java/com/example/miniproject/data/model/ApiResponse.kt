@@ -12,6 +12,13 @@ data class ClockInData(
     val attendanceDate: Long
 )
 
+data class ClockOutData(
+    val id: Int,
+    val totalHours: Int,
+    val clockOutTime: Long,
+    val attendanceDate: Long
+)
+
 data class AttendanceData(
     val id: Int,
     val attendanceDate: Long,
