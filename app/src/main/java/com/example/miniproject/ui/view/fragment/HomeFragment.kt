@@ -1,6 +1,7 @@
 package com.example.miniproject.ui.view.fragment
 
 import HrController
+import HrRepository
 import android.content.Context
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -14,8 +15,10 @@ import com.example.miniproject.data.manager.ActivityLogManager
 import com.example.miniproject.R
 import com.example.miniproject.constants.AppConstants
 import com.example.miniproject.data.model.User
+import com.example.miniproject.data.network.ApiClient
 import com.example.miniproject.ui.view.HrView
 import com.example.miniproject.utils.DateTimeUtils
+import com.example.miniproject.utils.ToastUtils
 import java.time.LocalDateTime
 import java.time.LocalTime
 
@@ -32,7 +35,6 @@ class HomeFragment : Fragment(), HrView {
     var date: String? = null
     var userId: Long = 1L              // กำหนด userId ชั่วคราว
 
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -42,8 +44,9 @@ class HomeFragment : Fragment(), HrView {
         // 1st is a layout design that I made, 2nd is the container, which is the object of the view group class here
         val view = inflater.inflate(R.layout.fragment_home, container, false)
 
+        val repository = HrRepository(ApiClient.apiService)
         // สร้าง controller โดยส่ง reference ของ activity นี้ (view) ไปด้วย // this คือ HomeFragment ที่ implement HrView
-        controller = HrController(this)
+        controller = HrController(this, repository)
 
         // Initialize views
         initViews(view)
@@ -52,6 +55,10 @@ class HomeFragment : Fragment(), HrView {
 
         // โหลดข้อมูล user จาก API
         controller.loadUserData(userId)
+
+        // Load
+        controller.getTodayClockIn(userId)
+        controller.getTodayClockOut(userId)
 
         return view
     }
@@ -82,10 +89,13 @@ class HomeFragment : Fragment(), HrView {
                 timeCheckIn.text = timeFormat
                 addCheckInLog(requireContext(), dateFormat, timeFormat)
 
-                controller.clockInUser(userId)  // เรียก API เช็คอิน
+                controller.clockInUser(userId)  //เรียก API ไปยัง server เพื่อบันทึกเวลา //API จะเก็บเวลาลงฐานข้อมูล
             } else {
-
                 toggleBtnStatusCheckInOut()
+                timeCheckIn.text = timeFormat
+                addCheckInLog(requireContext(), dateFormat, timeFormat)
+
+                controller.clockOutUser(userId)
             }
         }
     }
@@ -111,50 +121,14 @@ class HomeFragment : Fragment(), HrView {
         editor.apply()
     }
 
-
-    private fun setTextTimeCheckIn(time: String){
-        val currentTime = LocalTime.now()
-        val currentTimeCheckIn = currentTime.format(DateTimeUtils.displayTime)
-
-        timeCheckIn.text = currentTimeCheckIn
-
+    private fun setTextTimeCheckIn(clockInTime: Long) {
+        val formattedTime = DateTimeUtils.formatTimeFromMillis(clockInTime)
+        timeCheckIn.text = formattedTime
     }
 
-    private fun setTextTimeCheckOut(){
-        val  currentTime = LocalTime.now()
-        val currentTimeCheckOut = currentTime.format(DateTimeUtils.displayTime)
-
-        timeCheckOut.text = currentTimeCheckOut
-
-        val sharedPref = requireContext().getSharedPreferences(AppConstants.PREFS_NAME, Context.MODE_PRIVATE)
-        val editor = sharedPref.edit()
-        editor.putBoolean("isCheckedIn", false)
-        editor.apply()
-    }
-
-    private fun saveData(){
-        val sharedPref = requireActivity().getSharedPreferences(AppConstants.PREFS_NAME, Context.MODE_PRIVATE)
-
-        timeCheckedIn = timeCheckIn.text.toString()
-        timeCheckedOut = timeCheckOut.text.toString()
-
-        val editor = sharedPref.edit()
-        editor.putString("checkInTime", timeCheckedIn)
-        editor.putString("checkOutTime", timeCheckedOut)
-        editor.putBoolean("isCheckedIn", isCheckedIn)
-
-        editor.apply()
-    }
-
-    private fun retrieveData(){
-        val sharedPref = requireActivity().getSharedPreferences(AppConstants.PREFS_NAME, Context.MODE_PRIVATE)
-        timeCheckedIn = sharedPref.getString("checkInTime", "xx:xx")
-        timeCheckedOut = sharedPref.getString("checkOutTime", "xx:xx")
-        isCheckedIn = sharedPref.getBoolean("isCheckedIn", isCheckedIn)
-        toggleBtnStatusCheckInOut()
-
-        timeCheckIn.setText(timeCheckedIn)
-        timeCheckOut.setText(timeCheckedOut)
+    private fun setTextTimeCheckOut(clockOutTime: Long){
+        val formattedTime = DateTimeUtils.formatTimeFromMillis(clockOutTime)
+        timeCheckOut.text = formattedTime
     }
 
     private fun toggleBtnStatusCheckInOut(){
@@ -195,11 +169,35 @@ class HomeFragment : Fragment(), HrView {
 
 
     override fun onClockInSuccess(clockInTime: Long?) {
-        Toast.makeText(requireContext(), "Check-in success at $clockInTime", Toast.LENGTH_SHORT).show()
+        if(clockInTime != null){
+            setTextTimeCheckIn(clockInTime)
+            val dateFormat = DateTimeUtils.formatTimeFromMillis(clockInTime)
+            Toast.makeText(requireContext(), "Check-in success at $dateFormat", Toast.LENGTH_SHORT).show()
+        }
+        else {
+            // do nothing
+        }
+
     }
 
     override fun displayUserData(user: User?) {
 
+    }
+
+    override fun onNoAttendanceData() {
+        ToastUtils.showToast(requireContext(), R.string.no_attendance_data)
+    }
+
+
+    override fun onClockOutSuccess(clockOutTime: Long?) {
+        if(clockOutTime != null){
+            setTextTimeCheckOut(clockOutTime)
+            val dateFormat = DateTimeUtils.formatTimeFromMillis(clockOutTime)
+            Toast.makeText(requireContext(), "Check-out success at $dateFormat", Toast.LENGTH_SHORT).show()
+        }
+        else {
+            // do nothing
+        }
     }
 }
 

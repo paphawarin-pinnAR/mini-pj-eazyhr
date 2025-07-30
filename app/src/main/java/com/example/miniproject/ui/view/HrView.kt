@@ -6,5 +6,7 @@ interface HrView {
     fun showLoading(isLoading: Boolean)
     fun onError(message: String)
     fun onClockInSuccess(clockInTime: Long?)
+    fun onClockOutSuccess(clockOutTime: Long?)
+    fun onNoAttendanceData()
     fun displayUserData(user: User?)
 }

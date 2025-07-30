@@ -1,6 +1,5 @@
 package com.example.miniproject.data.model
 
-data class ClockInRequest(
+data class ClockOutRequest(
     val userId: Long
 )
-
