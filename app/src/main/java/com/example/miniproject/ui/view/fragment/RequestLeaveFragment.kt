@@ -104,48 +104,26 @@ class RequestLeaveFragment : Fragment() , HrView {
         editReason.text.clear()
     }
 
+    // เก็บค่าที่เลือกจาก Spinner ไว้ใช้ตอน save
+    private var selectedLeaveType: LeaveType = LeaveType.NONE
+    private var selectedPeriodType: PeriodType = PeriodType.NONE
+
     private fun setupSpinners() {
-        //get type from string.xml
         val leaveTypeList = resources.getStringArray(R.array.leaveType).toList()
         val periodTypeList = resources.getStringArray(R.array.periodType).toList()
 
         setupSpinnerItemSelectedListener(spinnerLeaveType, leaveTypeList) { typeSelected ->
-            val sharedPref = requireContext().getSharedPreferences(AppConstants.PREFS_NAME, Context.MODE_PRIVATE)
-            val editor = sharedPref.edit()
-            editor.putString("leaveRequestType", typeSelected).apply()
-
-            // LeaveType.values() คือการดึง enum ทุกตัวใน LeaveType ออกมาเป็น array เพื่อใช้ .find หาค่าที่ getDisplayName(...) ตรงกับ typeSelected
-            // convert the value that is selected from user in the Spinner (String) to enum LeaveType
-            // use .find to find enum ที่ displayType is match typeSelected
-            val selectedType = LeaveType.values().find {
-                it.getDisplayName(
-                    context = requireContext()
-                ) == typeSelected
+            selectedLeaveType = LeaveType.values().find {
+                it.getDisplayName(requireContext()) == typeSelected
             } ?: LeaveType.NONE
-
-            if(selectedType != LeaveType.NONE) {
-                // เอา enum ที่เลือก มาแสดงชื่ออีกครั้งด้วย Toast
-                val displayToast = selectedType.getDisplayName(context = requireContext())
-                Toast.makeText(requireContext(), displayToast, Toast.LENGTH_SHORT).show()
-            }
 
             checkFields()
         }
 
         setupSpinnerItemSelectedListener(spinnerPeriodType, periodTypeList) { periodSelected ->
-            val sharedPref = requireContext().getSharedPreferences(AppConstants.PREFS_NAME, Context.MODE_PRIVATE)
-            val editor = sharedPref.edit()
-            editor.putString("leaveRequestPeriod", periodSelected).apply()
-
-            val selectedPeriod = PeriodType.values().find {
-                it.getDisplayName(context = requireContext()) == periodSelected
+            selectedPeriodType = PeriodType.values().find {
+                it.getDisplayName(requireContext()) == periodSelected
             } ?: PeriodType.NONE
-
-            if(selectedPeriod != PeriodType.NONE) {
-                val displayToast = selectedPeriod.getDisplayName(context = requireContext())
-                Toast.makeText(requireContext(), displayToast, Toast.LENGTH_SHORT).show()
-
-            }
 
             checkFields()
         }
@@ -241,24 +219,23 @@ class RequestLeaveFragment : Fragment() , HrView {
 
     private fun setupButtonListener() {
         btnSave.setOnClickListener {
-            val currentDate = LocalDateTime.now()
-            val dateFormat = currentDate.format(DateTimeUtils.displayDate)
+            if (selectedLeaveType == LeaveType.NONE || selectedPeriodType == PeriodType.NONE) {
+               //ToastUtils.showToast(requireContext(), "Please select valid leave type and period.")
+                return@setOnClickListener
+            }
 
-            val leaveType = spinnerLeaveType.selectedItem.toString()
             val fromDate = editTextFromDate.text.toString()
             val toDate = editTextToDate.text.toString()
-            val leavePeriod = spinnerPeriodType.selectedItem.toString()
             val reason = editReason.text.toString()
 
             val startDateMillis = convertDateStringToMillis(fromDate)
             val endDateMillis = convertDateStringToMillis(toDate)
-
             val totalDays = ((endDateMillis - startDateMillis) / (1000 * 60 * 60 * 24) + 1).toDouble()
 
             val leaveRequest = LeaveRequest(
                 userId = userId,
-                leaveCategory = leaveType,
-                leavePeriod = leavePeriod,
+                leaveCategory = selectedLeaveType.name,
+                leavePeriod = selectedPeriodType.name,
                 startDate = startDateMillis,
                 endDate = endDateMillis,
                 reason = reason,
@@ -270,13 +247,14 @@ class RequestLeaveFragment : Fragment() , HrView {
             clearFields()
             ToastUtils.showToast(requireContext(), R.string.data_applied)
 
+            val dateFormat = LocalDateTime.now().format(DateTimeUtils.displayDate)
             addRequestLeaveLog(
                 requireContext(),
                 dateFormat,
-                leaveType,
+                selectedLeaveType.getDisplayName(requireContext()),
                 fromDate,
                 toDate,
-                leavePeriod,
+                selectedPeriodType.getDisplayName(requireContext()),
                 reason
             )
         }
@@ -286,6 +264,7 @@ class RequestLeaveFragment : Fragment() , HrView {
             ToastUtils.showToast(requireContext(), R.string.data_deleted)
         }
     }
+
 
     private fun checkFields() {
         val hasFromDate = editTextFromDate.text.isNotBlank()

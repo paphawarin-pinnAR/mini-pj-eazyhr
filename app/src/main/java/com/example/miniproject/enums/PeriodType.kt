@@ -4,13 +4,19 @@ import android.content.Context
 import androidx.annotation.StringRes
 import com.example.miniproject.R
 
-enum class PeriodType(@StringRes val resourceId: Int) {
-    AM(R.string.period_am),
-    PM(R.string.period_pm),
-    FULL(R.string.period_full),
-    NONE(R.string.period_none);
+// PeriodType.kt
+enum class PeriodType {
+    FULL_DAY,
+    AM,
+    PM,
+    NONE;
 
     fun getDisplayName(context: Context): String {
-        return context.getString(resourceId)
+        return when (this) {
+            FULL_DAY -> context.getString(R.string.period_full)
+            AM -> context.getString(R.string.period_am)
+            PM -> context.getString(R.string.period_pm)
+            NONE -> ""
+        }
     }
 }
