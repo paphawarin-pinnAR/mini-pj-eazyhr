@@ -4,6 +4,8 @@ import com.example.miniproject.data.model.ClockInData
 import com.example.miniproject.data.model.ClockInRequest
 import com.example.miniproject.data.model.ClockOutData
 import com.example.miniproject.data.model.ClockOutRequest
+import com.example.miniproject.data.model.LeaveData
+import com.example.miniproject.data.model.LeaveRequest
 import com.example.miniproject.data.model.User
 import com.example.miniproject.data.network.ApiClient
 import com.example.miniproject.data.network.ApiService
@@ -20,35 +22,41 @@ class HrRepository (private val apiService: ApiService) {
     }
 
     suspend fun clockIn(request: ClockInRequest): ClockInData? {
-        return try {
-            val response = apiService.clockIn(userId = request.userId.toInt())
-            if (response.status == "success") {
-                return response.data
+        return withContext(Dispatchers.IO) {
+            try {
+                val response = apiService.clockIn(request.userId.toInt())
+                if (response.status == "success") response.data else null
+            } catch (e: Exception) {
+                null
             }
-
-            else {
-                return null
-            }
-        } catch (e: Exception) {
-            null
         }
     }
 
     suspend fun clockOut(request: ClockOutRequest): ClockOutData? {
-        return try {
-            val response = apiService.clockOut(userId = request.userId.toInt())
-            if (response.status == "success") response.data else null
-        } catch (e: Exception) {
-            null
+        return withContext(Dispatchers.IO) {
+            try {
+                val response = apiService.clockOut(request.userId.toInt())
+                if (response.status == "success") response.data else null
+            } catch (e: Exception) {
+                null
+            }
         }
     }
 
-    suspend fun getTodayAttendance(): List<AttendanceData>?{
-        val response = apiService.getTodayAttendance()
-        return try {
-            if (response.status == "success") response.data else null
-        } catch (e: Exception) {
-            null
+    suspend fun getTodayAttendance(): List<AttendanceData>? {
+        return withContext(Dispatchers.IO) {
+            try {
+                val response = apiService.getTodayAttendance()
+                if (response.status == "success") response.data else null
+            } catch (e: Exception) {
+                null
+            }
+        }
+    }
+
+    suspend fun applyForLeave(leaveRequest: LeaveRequest): ApiResponse<LeaveData> {
+        return withContext(Dispatchers.IO) {
+            apiService.applyLeave(leaveRequest)
         }
     }
 }

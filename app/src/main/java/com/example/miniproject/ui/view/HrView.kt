@@ -1,4 +1,6 @@
 package com.example.miniproject.ui.view
+import com.example.miniproject.data.model.LeaveData
+import com.example.miniproject.data.model.LeaveRequest
 import com.example.miniproject.data.model.User
 
 // Activity/Fragment จะ implement interface นี้
@@ -9,4 +11,5 @@ interface HrView {
     fun onClockOutSuccess(clockOutTime: Long?)
     fun onNoAttendanceData()
     fun displayUserData(user: User?)
+    fun onLeaveApplicationSuccess(leaveRequest: LeaveData?)
 }

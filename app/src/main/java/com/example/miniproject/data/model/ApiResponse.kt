@@ -35,3 +35,25 @@ data class AttendanceData(
     val clockedIn: Boolean,
     val clockedOut: Boolean
 )
+
+data class LeaveData (
+    val id: Int,
+    val leaveCategory: String,
+    val startDate: Long,
+    val endDate: Long,
+    val leavePeriod: String,
+    val totalDays: Int,
+    val reason: String,
+    val status: String,
+    val appliedDate: String,
+    val approvedBy: String?,
+    val approvedDate: String?,
+    val comments: String?,
+    val createdAt: String,
+    val updatedAt: String,
+    val statusBadgeClass: String,
+    val formattedDateRange: String,
+    val approved: Boolean,
+    val rejected: Boolean,
+    val pending: Boolean
+)

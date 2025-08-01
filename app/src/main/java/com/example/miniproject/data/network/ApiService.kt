@@ -5,6 +5,8 @@ import com.example.miniproject.data.model.AttendanceData
 import com.example.miniproject.data.model.ClockInData
 import com.example.miniproject.data.model.ClockInRequest
 import com.example.miniproject.data.model.ClockOutData
+import com.example.miniproject.data.model.LeaveData
+import com.example.miniproject.data.model.LeaveRequest
 import com.example.miniproject.data.model.User
 import retrofit2.http.Body
 import retrofit2.http.GET
@@ -25,4 +27,6 @@ interface ApiService {
     @GET("api/attendance/today")
     suspend fun getTodayAttendance(): ApiResponse<List<AttendanceData>>
 
+    @POST("api/leave/apply")
+    suspend fun applyLeave(@Body request: LeaveRequest): ApiResponse<LeaveData>
 }

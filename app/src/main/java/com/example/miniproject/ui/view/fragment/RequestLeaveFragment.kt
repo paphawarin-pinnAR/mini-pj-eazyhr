@@ -1,5 +1,7 @@
 package com.example.miniproject.ui.view.fragment
 
+import HrController
+import HrRepository
 import android.content.Context
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -20,11 +22,18 @@ import com.example.miniproject.enums.LeaveType
 import com.example.miniproject.enums.PeriodType
 import com.example.miniproject.R
 import com.example.miniproject.constants.AppConstants
+import com.example.miniproject.data.model.LeaveData
+import com.example.miniproject.data.model.LeaveRequest
+import com.example.miniproject.data.model.User
+import com.example.miniproject.data.network.ApiClient
+import com.example.miniproject.ui.view.HrView
 import com.example.miniproject.utils.DateTimeUtils
 import com.example.miniproject.utils.ToastUtils
+import java.text.SimpleDateFormat
 import java.time.LocalDateTime
+import java.util.Locale
 
-class RequestLeaveFragment : Fragment() {
+class RequestLeaveFragment : Fragment() , HrView {
     private lateinit var spinnerLeaveType: Spinner
     private lateinit var icCalendarFromDate: ImageView
     private lateinit var icCalendarToDate: ImageView
@@ -35,6 +44,9 @@ class RequestLeaveFragment : Fragment() {
     private lateinit var btnSave: Button
     private lateinit var btnCancel: Button
 
+    private lateinit var controller: HrController
+    private var userId: Long = 1L
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -43,11 +55,18 @@ class RequestLeaveFragment : Fragment() {
         // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_request_leave, container, false)
 
+        val repository = HrRepository(ApiClient.apiService)
+
+        controller = HrController(this, repository)
+
         // Initialize views
         initViews(view)
 
         //set disable default for the "SAVE" button
         btnSave.isEnabled = false
+
+        // โหลดข้อมูล user จาก API
+        controller.loadUserData(userId)
 
         // Set up fragment result listener
         setupFragmentResultListener()
@@ -60,6 +79,7 @@ class RequestLeaveFragment : Fragment() {
         setupTextChangeListeners()
 
         setupButtonListener()
+
 
         return view
     }
@@ -224,27 +244,29 @@ class RequestLeaveFragment : Fragment() {
             val currentDate = LocalDateTime.now()
             val dateFormat = currentDate.format(DateTimeUtils.displayDate)
 
-            var leaveType = spinnerLeaveType.selectedItem.toString()
-            var fromDate = editTextFromDate.text.toString()
-            var toDate = editTextToDate.text.toString()
-            var leavePeriod = spinnerPeriodType.selectedItem.toString()
-            var reason = editReason.text.toString()
+            val leaveType = spinnerLeaveType.selectedItem.toString()
+            val fromDate = editTextFromDate.text.toString()
+            val toDate = editTextToDate.text.toString()
+            val leavePeriod = spinnerPeriodType.selectedItem.toString()
+            val reason = editReason.text.toString()
 
-            val sharedPref = requireActivity().getSharedPreferences(
-                AppConstants.PREFS_NAME,
-                Context.MODE_PRIVATE
+            val startDateMillis = convertDateStringToMillis(fromDate)
+            val endDateMillis = convertDateStringToMillis(toDate)
+
+            val totalDays = ((endDateMillis - startDateMillis) / (1000 * 60 * 60 * 24) + 1).toDouble()
+
+            val leaveRequest = LeaveRequest(
+                userId = userId,
+                leaveCategory = leaveType,
+                leavePeriod = leavePeriod,
+                startDate = startDateMillis,
+                endDate = endDateMillis,
+                reason = reason,
+                totalDays = totalDays
             )
-            val editor = sharedPref.edit()
-            editor.putString(
-                "leaveRequestType",
-                leaveType
-            ) //save leaveRequestType selection into the SharedPref by using "leaveRequestType" key
-            editor.putString("leaveDateFrom", fromDate)
-            editor.putString("leaveDateTo", toDate)
-            editor.putString("leaveRequestPeriod", leavePeriod)
-            editor.putString("leaveReason", reason)
 
-            editor.apply()
+            controller.applyForLeave(leaveRequest)
+
             clearFields()
             ToastUtils.showToast(requireContext(), R.string.data_applied)
 
@@ -263,7 +285,6 @@ class RequestLeaveFragment : Fragment() {
             clearFields()
             ToastUtils.showToast(requireContext(), R.string.data_deleted)
         }
-
     }
 
     private fun checkFields() {
@@ -303,6 +324,40 @@ class RequestLeaveFragment : Fragment() {
             )
         )
         ActivityLogManager.putActivityLog(context, log)
+    }
+
+    private fun convertDateStringToMillis(dateString: String): Long {
+        val format = SimpleDateFormat("MMM dd, yyyy", Locale.getDefault())  // ปรับ format ให้ตรงกับที่ใช้จริง
+        val date = format.parse(dateString)
+        return date?.time ?: 0L
+    }
+
+    override fun showLoading(isLoading: Boolean) {
+
+    }
+
+    override fun onError(message: String) {
+        Toast.makeText(requireContext(), "Error: $message", Toast.LENGTH_LONG).show()
+    }
+
+    override fun onClockInSuccess(clockInTime: Long?) {
+
+    }
+
+    override fun onClockOutSuccess(clockOutTime: Long?) {
+
+    }
+
+    override fun onNoAttendanceData() {
+
+    }
+
+    override fun displayUserData(user: User?) {
+
+    }
+
+    override fun onLeaveApplicationSuccess(leaveRequest: LeaveData?) {
+        Toast.makeText(requireContext(), "ยื่นใบลาสำเร็จ รหัสคำขอ: ${leaveRequest?.id}", Toast.LENGTH_SHORT).show()
     }
 }
 
