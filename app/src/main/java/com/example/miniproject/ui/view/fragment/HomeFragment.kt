@@ -14,6 +14,7 @@ import android.widget.Toast
 import com.example.miniproject.data.manager.ActivityLogManager
 import com.example.miniproject.R
 import com.example.miniproject.constants.AppConstants
+import com.example.miniproject.data.model.LeaveData
 import com.example.miniproject.data.model.User
 import com.example.miniproject.data.network.ApiClient
 import com.example.miniproject.ui.view.HrView
@@ -45,7 +46,9 @@ class HomeFragment : Fragment(), HrView {
         val view = inflater.inflate(R.layout.fragment_home, container, false)
 
         val repository = HrRepository(ApiClient.apiService)
-        // สร้าง controller โดยส่ง reference ของ activity นี้ (view) ไปด้วย // this คือ HomeFragment ที่ implement HrView
+
+        // สร้าง controller โดยส่ง reference ของ activity นี้ (view) ไปด้วย
+        // this คือ HomeFragment ที่ implement HrView
         controller = HrController(this, repository)
 
         // Initialize views
@@ -93,32 +96,11 @@ class HomeFragment : Fragment(), HrView {
             } else {
                 toggleBtnStatusCheckInOut()
                 timeCheckIn.text = timeFormat
-                addCheckInLog(requireContext(), dateFormat, timeFormat)
+                addCheckOutLog(requireContext(), dateFormat, timeFormat)
 
                 controller.clockOutUser(userId)
             }
         }
-    }
-
-
-    private fun setTextDateCheckIn() {
-        val currentDate = LocalDateTime.now()
-        val currentDateCheckIn = currentDate.format(DateTimeUtils.displayDate)
-
-        val sharedPref = requireContext().getSharedPreferences(AppConstants.PREFS_NAME, Context.MODE_PRIVATE)
-        val editor = sharedPref.edit()
-        editor.putString("checkInDate", currentDateCheckIn)
-        editor.apply()
-    }
-
-    private fun setTextDateCheckOut() {
-        val currentDate = LocalDateTime.now()
-        val currentDateCheckOut = currentDate.format(DateTimeUtils.displayDate)
-
-        val sharedPref = requireContext().getSharedPreferences(AppConstants.PREFS_NAME, Context.MODE_PRIVATE)
-        val editor = sharedPref.edit()
-        editor.putString("checkOutDate", currentDateCheckOut)
-        editor.apply()
     }
 
     private fun setTextTimeCheckIn(clockInTime: Long) {
@@ -144,7 +126,6 @@ class HomeFragment : Fragment(), HrView {
 
     private fun addCheckInLog (context: Context, date:String, time:String) {
         val log = ActivityLogManager.getActivityLog(context).toMutableList() //.toMutableList() to allow add the new list
-
         log.add(ActivityLogManager.createLog(date, "Check-in", "Check-in: $time")) //add new log
         ActivityLogManager.putActivityLog(
             context,
@@ -154,7 +135,6 @@ class HomeFragment : Fragment(), HrView {
 
     private fun addCheckOutLog (context: Context, date:String, time:String) {
         val log = ActivityLogManager.getActivityLog(context).toMutableList() //.toMutableList() to allow add the new list
-
         log.add(ActivityLogManager.createLog(date, "Check-out", "Check-out: $time"))
         ActivityLogManager.putActivityLog(context, log)
     }
@@ -167,7 +147,6 @@ class HomeFragment : Fragment(), HrView {
         Toast.makeText(requireContext(), "Error: $message", Toast.LENGTH_LONG).show()
     }
 
-
     override fun onClockInSuccess(clockInTime: Long?) {
         if(clockInTime != null){
             setTextTimeCheckIn(clockInTime)
@@ -175,19 +154,21 @@ class HomeFragment : Fragment(), HrView {
             Toast.makeText(requireContext(), "Check-in success at $dateFormat", Toast.LENGTH_SHORT).show()
         }
         else {
-            // do nothing
+            ToastUtils.showToast(requireContext(), R.string.check_in_error)
         }
-
     }
 
     override fun displayUserData(user: User?) {
 
     }
 
+    override fun onLeaveApplicationSuccess(leaveRequest: LeaveData?) {
+
+    }
+
     override fun onNoAttendanceData() {
         ToastUtils.showToast(requireContext(), R.string.no_attendance_data)
     }
-
 
     override fun onClockOutSuccess(clockOutTime: Long?) {
         if(clockOutTime != null){
@@ -196,7 +177,7 @@ class HomeFragment : Fragment(), HrView {
             Toast.makeText(requireContext(), "Check-out success at $dateFormat", Toast.LENGTH_SHORT).show()
         }
         else {
-            // do nothing
+            ToastUtils.showToast(requireContext(), R.string.check_out_error)
         }
     }
 }

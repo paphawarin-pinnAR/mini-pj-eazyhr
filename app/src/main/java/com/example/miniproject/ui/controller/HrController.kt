@@ -4,6 +4,7 @@ import com.example.miniproject.data.model.ClockInData
 import com.example.miniproject.data.model.ClockInRequest
 import com.example.miniproject.data.model.ClockOutData
 import com.example.miniproject.data.model.ClockOutRequest
+import com.example.miniproject.data.model.LeaveRequest
 import com.example.miniproject.data.network.ApiClient
 import com.example.miniproject.ui.view.HrView
 import com.google.gson.Gson
@@ -75,6 +76,7 @@ class HrController(private val view: HrView, private val repository: HrRepositor
 
     fun getTodayClockIn(userId: Long) {
         controllerScope.launch {
+            view.showLoading(true)
             try {
                 val attendanceList = repository.getTodayAttendance()
                 val userAttendance = attendanceList?.firstOrNull()
@@ -89,9 +91,9 @@ class HrController(private val view: HrView, private val repository: HrRepositor
         }
     }
 
-
     fun getTodayClockOut(userId: Long) {
         controllerScope.launch {
+            view.showLoading(true)
             try {
                 val attendanceList = repository.getTodayAttendance()
                 val userAttendance = attendanceList?.firstOrNull()
@@ -102,6 +104,31 @@ class HrController(private val view: HrView, private val repository: HrRepositor
                 }
             } catch (e: Exception) {
                 view.onError("โหลดข้อมูลล้มเหลว: ${e.message}")
+            }
+        }
+    }
+
+    fun applyForLeave(leaveRequest: LeaveRequest) {
+        controllerScope.launch {
+            view.showLoading(true)
+            try {
+                val response = repository.applyForLeave(leaveRequest)
+
+                withContext(Dispatchers.Main) {
+                    if (response.status == "success") {
+                        view.onLeaveApplicationSuccess(response.data)
+                    } else {
+                        view.onError("การยื่นใบลาล้มเหลว: ${response.message}")
+                    }
+                }
+            } catch (e: Exception) {
+                withContext(Dispatchers.Main) {
+                    view.onError("ข้อผิดพลาดเครือข่าย: ${e.message}")
+                }
+            } finally {
+                withContext(Dispatchers.Main) {
+                    view.showLoading(false)
+                }
             }
         }
     }
