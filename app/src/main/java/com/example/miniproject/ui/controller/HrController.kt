@@ -1,5 +1,6 @@
 import android.util.Log
 import com.example.miniproject.data.model.ApiResponse
+import com.example.miniproject.data.model.AttendanceData
 import com.example.miniproject.data.model.ClockInData
 import com.example.miniproject.data.model.ClockInRequest
 import com.example.miniproject.data.model.ClockOutData
@@ -17,6 +18,7 @@ class HrController(private val view: HrView, private val repository: HrRepositor
 
     // private val repository: HrRepository = HrRepository(ApiClient.apiService)
     private val controllerScope = CoroutineScope(Dispatchers.Main)
+    private var cachedAttendance: AttendanceData? = null
 
     fun clockInUser(userId: Long) {
         controllerScope.launch {
@@ -78,12 +80,18 @@ class HrController(private val view: HrView, private val repository: HrRepositor
         controllerScope.launch {
             view.showLoading(true)
             try {
-                val attendanceList = repository.getTodayAttendance()
-                val userAttendance = attendanceList?.firstOrNull()
-                if (userAttendance != null) {
-                    view.onClockInSuccess(userAttendance.clockInTime)
-                } else {
-                    view.onNoAttendanceData()
+                // if there is no cached data, retrieve attendance data from the repository
+                if (cachedAttendance == null) {
+                    val attendanceList = repository.getTodayAttendance()
+                    cachedAttendance = attendanceList?.firstOrNull()
+                }
+                if (cachedAttendance != null) {
+                    val userAttendance = cachedAttendance
+                    if (userAttendance != null) {
+                        view.onClockInSuccess(userAttendance.clockInTime)
+                    } else {
+                        view.onNoAttendanceData()
+                    }
                 }
             } catch (e: Exception) {
                 view.onError("โหลดข้อมูลล้มเหลว: ${e.message}")
@@ -95,12 +103,17 @@ class HrController(private val view: HrView, private val repository: HrRepositor
         controllerScope.launch {
             view.showLoading(true)
             try {
-                val attendanceList = repository.getTodayAttendance()
-                val userAttendance = attendanceList?.firstOrNull()
-                if (userAttendance != null) {
-                    view.onClockOutSuccess(userAttendance.clockOutTime)
-                } else {
-                    view.onNoAttendanceData()
+                if (cachedAttendance == null) {
+                    val attendanceList = repository.getTodayAttendance()
+                    cachedAttendance = attendanceList?.firstOrNull()
+                }
+                if (cachedAttendance != null) {
+                    val userAttendance = cachedAttendance
+                    if (userAttendance != null) {
+                        view.onClockOutSuccess(userAttendance.clockOutTime)
+                    } else {
+                        view.onNoAttendanceData()
+                    }
                 }
             } catch (e: Exception) {
                 view.onError("โหลดข้อมูลล้มเหลว: ${e.message}")
@@ -113,7 +126,6 @@ class HrController(private val view: HrView, private val repository: HrRepositor
             view.showLoading(true)
             try {
                 val response = repository.applyForLeave(leaveRequest)
-
                 withContext(Dispatchers.Main) {
                     if (response.status == "success") {
                         view.onLeaveApplicationSuccess(response.data)
