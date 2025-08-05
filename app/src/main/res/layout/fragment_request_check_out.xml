@@ -52,7 +52,7 @@
             android:layout_width="30dp"
             android:layout_height="29dp"
             android:layout_gravity="center"
-            android:src="@drawable/ic_calendar" />
+            android:src="@drawable/ic_calendar_month" />
 
 
     </LinearLayout>
