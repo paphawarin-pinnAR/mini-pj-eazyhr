@@ -146,37 +146,13 @@ class RequestLeaveFragment : Fragment() , HrView {
         }
     }
 
-    private fun setupCalendarIconLister(){
+    private fun setupCalendarIconLister() {
         icCalendarFromDate.setOnClickListener {
-            val calendarDialog = CalendarFragment().apply {
-                arguments = Bundle().apply {
-                    putString(
-                        "resultKey",
-                        "fromDate"
-                    )   // Note that the Dialog is opened from the FromDate field
-                }
-            }
-
-            calendarDialog.show(
-                parentFragmentManager,
-                "fromDateField"
-            )  // "calendarDialog" is Tag name (Optional) using for find the dialog
+            //TODO
         }
 
         icCalendarToDate.setOnClickListener {
-            val calendarDialog = CalendarFragment().apply {
-                arguments = Bundle().apply {
-                    putString(
-                        "resultKey",
-                        "toDate"
-                    )   // Note that the Dialog is opened from the FromDate field
-                }
-            }
-
-            calendarDialog.show(
-                parentFragmentManager,
-                "toDateField"
-            ) // "calendarDialog" is Tag name (Optional) using for find the dialog
+            //TODO
         }
     }
 

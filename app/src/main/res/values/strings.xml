@@ -26,6 +26,15 @@
     <string name="no_attendance_data">There is no an Attendance data</string>
     <string name="check_in_error">Check in error.</string>
     <string name="check_out_error">Check out error.</string>
+    <string name="mon">Mon</string>
+    <string name="tue">Tue</string>
+    <string name="wed">Wed</string>
+    <string name="thu">Thu</string>
+    <string name="fri">Fri</string>
+    <string name="sat">Sat</string>
+    <string name="sun">Sun</string>
+    <string name="date_setting">Date Setting</string>
+    <string name="submit">SUBMIT</string>
 
     <!--About Spinner-->
     <string-array name="requestType">
@@ -49,6 +58,6 @@
         <item>AM</item>
         <item>PM</item>
         <item>Full Day</item>
-       </string-array>
+    </string-array>
 
 </resources>

@@ -95,14 +95,8 @@ class RequestCheckOutFragment : Fragment() {
 
     private fun setupCalendarIconListener(){
         icCalendarCheckOutDate.setOnClickListener {
-            val calendarDialog = CalendarFragment().apply {
-                arguments = Bundle().apply {
-                    putString("resultKey", "checkOutDate")
-                }
-            }
-            calendarDialog.show(parentFragmentManager,"checkOutDateField")
+            //TODO
         }
-
     }
 
     private fun setupTextChangeListeners() {

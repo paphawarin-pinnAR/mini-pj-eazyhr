@@ -84,14 +84,9 @@ class RequestOTFragment : Fragment() {
         }
     }
 
-    private fun setupCalendarIconLister(){
+    private fun setupCalendarIconLister() {
         icCalendarOTDate.setOnClickListener {
-            val calendarDialog = CalendarFragment().apply {
-                arguments = Bundle().apply {
-                    putString("resultKey", "OTDate")
-                }
-            }
-            calendarDialog.show(parentFragmentManager, "OTDateField")
+            //TODO
         }
     }
 
