@@ -115,22 +115,23 @@
             android:textSize="12sp" />
     </LinearLayout>
 
-    <FrameLayout
-        android:layout_width="match_parent"
-        android:layout_height="675dp"
-        android:background="#FBF3F3">
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:background="#FBF3F3">
 
-        <TextView
-            android:id="@+id/date_picker"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginTop="15dp"
-            android:fontFamily="@font/roboto_regular"
-            android:text="calendar_area #TODO"
-            android:textColor="@android:color/black"
-            android:textSize="17sp" />
-    </FrameLayout>
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/calendarRecyclerView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:padding="8dp"
+                android:clipToPadding="false"
+                tools:listitem="@layout/item_month"
+                android:fontFamily="@font/roboto_regular"
+                android:textSize="17sp"
+                android:textColor="@android:color/black"/>
+        </FrameLayout>
 
     <FrameLayout
         android:layout_width="match_parent"
