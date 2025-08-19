@@ -3,6 +3,7 @@ package com.example.miniproject.ui.view.fragment
 import HrController
 import HrRepository
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -27,6 +28,7 @@ import com.example.miniproject.data.model.LeaveRequest
 import com.example.miniproject.data.model.User
 import com.example.miniproject.data.network.ApiClient
 import com.example.miniproject.ui.view.HrView
+import com.example.miniproject.ui.view.activity.SecondActivity
 import com.example.miniproject.utils.DateTimeUtils
 import com.example.miniproject.utils.ToastUtils
 import java.text.SimpleDateFormat
@@ -148,11 +150,17 @@ class RequestLeaveFragment : Fragment() , HrView {
 
     private fun setupCalendarIconLister() {
         icCalendarFromDate.setOnClickListener {
-            //TODO
+            context?.let {
+                val intent = Intent(it, SecondActivity::class.java)
+                startActivity(intent)
+            }
         }
 
         icCalendarToDate.setOnClickListener {
-            //TODO
+            context?.let {
+                val intent = Intent(it, SecondActivity::class.java)
+                startActivity(intent)
+            }
         }
     }
 

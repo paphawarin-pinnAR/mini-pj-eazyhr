@@ -81,8 +81,10 @@ class RequestCheckInFragment : Fragment() {
 
     private fun setupCalendarIconListener(){
         icCalendarCheckInDate.setOnClickListener {
-            val intent = Intent(requireContext(), SecondActivity::class.java)
-            startActivity(intent)
+            context?.let {
+                val intent = Intent(it, SecondActivity::class.java)
+                startActivity(intent)
+            }
         }
     }
 
