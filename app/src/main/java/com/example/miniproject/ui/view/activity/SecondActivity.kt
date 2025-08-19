@@ -5,6 +5,7 @@ import android.view.View
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
@@ -16,6 +17,9 @@ import com.example.miniproject.data.model.DayData
 import com.example.miniproject.data.model.MonthDataSource
 import com.example.miniproject.listener.OnDayClickListener
 import com.example.miniproject.ui.adapter.MonthAdapter
+import com.example.miniproject.utils.ToastUtils
+import java.time.format.DateTimeFormatter
+import java.util.Locale
 
 class SecondActivity : AppCompatActivity(), OnDayClickListener{
 
@@ -64,6 +68,7 @@ class SecondActivity : AppCompatActivity(), OnDayClickListener{
     }
 
     override fun onDayClick(day: DayData) {
-        TODO("Not yet implemented")
+        val formatter = DateTimeFormatter.ofPattern("MMM dd, yyyy", Locale.ENGLISH)
+        Toast.makeText(this,"คุณเลือกวันที่ ${day.date.format(formatter)}", Toast.LENGTH_SHORT).show()
     }
 }
