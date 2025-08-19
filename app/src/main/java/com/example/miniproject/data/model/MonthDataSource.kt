@@ -12,7 +12,7 @@ data class MonthData(
     val year: Int,
     val monthValue : Int,
     val monthName: String,
-    val days: List<DayData>
+    val days: List<DayData?>
 )
 
 // object is the singleton -> สร้างได้ครั้งเดียว ใช้ได้ทั้งแอป //แหล่งข้อมูลของเดือน (data provider)
@@ -29,7 +29,6 @@ object MonthDataSource {
                 monthValue = month,
                 monthName = monthName,
                 days = days
-
             )
         }
     }
