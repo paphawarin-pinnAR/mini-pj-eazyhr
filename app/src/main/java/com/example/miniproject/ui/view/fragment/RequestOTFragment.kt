@@ -1,6 +1,7 @@
 package com.example.miniproject.ui.view.fragment
 
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -15,6 +16,7 @@ import androidx.core.widget.addTextChangedListener
 import com.example.miniproject.data.manager.ActivityLogManager
 import com.example.miniproject.R
 import com.example.miniproject.constants.AppConstants
+import com.example.miniproject.ui.view.activity.SecondActivity
 import com.example.miniproject.utils.DateTimeUtils
 import com.example.miniproject.utils.ToastUtils
 import java.time.DateTimeException
@@ -84,14 +86,12 @@ class RequestOTFragment : Fragment() {
         }
     }
 
-    private fun setupCalendarIconLister(){
+    private fun setupCalendarIconLister() {
         icCalendarOTDate.setOnClickListener {
-            val calendarDialog = CalendarFragment().apply {
-                arguments = Bundle().apply {
-                    putString("resultKey", "OTDate")
-                }
+            context?.let {
+                val intent = Intent(it, SecondActivity::class.java)
+                startActivity(intent)
             }
-            calendarDialog.show(parentFragmentManager, "OTDateField")
         }
     }
 

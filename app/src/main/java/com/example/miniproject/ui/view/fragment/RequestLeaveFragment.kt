@@ -3,6 +3,7 @@ package com.example.miniproject.ui.view.fragment
 import HrController
 import HrRepository
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -27,6 +28,7 @@ import com.example.miniproject.data.model.LeaveRequest
 import com.example.miniproject.data.model.User
 import com.example.miniproject.data.network.ApiClient
 import com.example.miniproject.ui.view.HrView
+import com.example.miniproject.ui.view.activity.SecondActivity
 import com.example.miniproject.utils.DateTimeUtils
 import com.example.miniproject.utils.ToastUtils
 import java.text.SimpleDateFormat
@@ -146,37 +148,19 @@ class RequestLeaveFragment : Fragment() , HrView {
         }
     }
 
-    private fun setupCalendarIconLister(){
+    private fun setupCalendarIconLister() {
         icCalendarFromDate.setOnClickListener {
-            val calendarDialog = CalendarFragment().apply {
-                arguments = Bundle().apply {
-                    putString(
-                        "resultKey",
-                        "fromDate"
-                    )   // Note that the Dialog is opened from the FromDate field
-                }
+            context?.let {
+                val intent = Intent(it, SecondActivity::class.java)
+                startActivity(intent)
             }
-
-            calendarDialog.show(
-                parentFragmentManager,
-                "fromDateField"
-            )  // "calendarDialog" is Tag name (Optional) using for find the dialog
         }
 
         icCalendarToDate.setOnClickListener {
-            val calendarDialog = CalendarFragment().apply {
-                arguments = Bundle().apply {
-                    putString(
-                        "resultKey",
-                        "toDate"
-                    )   // Note that the Dialog is opened from the FromDate field
-                }
+            context?.let {
+                val intent = Intent(it, SecondActivity::class.java)
+                startActivity(intent)
             }
-
-            calendarDialog.show(
-                parentFragmentManager,
-                "toDateField"
-            ) // "calendarDialog" is Tag name (Optional) using for find the dialog
         }
     }
 

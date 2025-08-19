@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+    <FrameLayout
+        android:layout_width="54dp"
+        android:layout_height="66dp"
+        android:gravity="center">
+
+    <ImageView
+        android:id="@+id/markerDaySelected"
+        android:layout_width="54dp"
+        android:layout_height="66dp"
+        android:visibility="gone"
+        android:src="@drawable/calendar_selected_marker"/>
+
+    <ImageView
+        android:id="@+id/markerToday"
+        android:layout_width="54dp"
+        android:layout_height="66dp"
+        android:visibility="gone"
+        android:src="@drawable/calendar_current_marker"/>
+
+    <TextView
+        android:id="@+id/tvDay"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:textColor="@color/black"
+        android:textSize="20sp"
+        android:text="1" />
+    </FrameLayout>
+
+    <View
+        android:id="@+id/rvLine_divider"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#9B9B9B" />
+</LinearLayout>
