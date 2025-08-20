@@ -17,6 +17,7 @@ import com.example.miniproject.data.manager.ActivityLogManager
 import com.example.miniproject.R
 import com.example.miniproject.constants.AppConstants
 import com.example.miniproject.ui.view.activity.SecondActivity
+import com.example.miniproject.ui.view.base.BaseCalendarFragment
 import com.example.miniproject.utils.DateTimeUtils
 import com.example.miniproject.utils.ToastUtils
 import java.time.DateTimeException
@@ -24,7 +25,7 @@ import java.time.LocalDateTime
 import java.time.LocalTime
 
 
-class RequestOTFragment : Fragment() {
+class RequestOTFragment : BaseCalendarFragment() {
     private lateinit var editTextOTDate : EditText
     private lateinit var icCalendarOTDate : ImageView
     private lateinit var checkboxBreakTime : CheckBox
@@ -88,10 +89,7 @@ class RequestOTFragment : Fragment() {
 
     private fun setupCalendarIconLister() {
         icCalendarOTDate.setOnClickListener {
-            context?.let {
-                val intent = Intent(it, SecondActivity::class.java)
-                startActivity(intent)
-            }
+                openCalendar(editTextOTDate)
         }
     }
 

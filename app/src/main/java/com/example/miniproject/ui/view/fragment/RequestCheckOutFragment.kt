@@ -16,13 +16,14 @@ import com.example.miniproject.data.manager.ActivityLogManager
 import com.example.miniproject.R
 import com.example.miniproject.constants.AppConstants
 import com.example.miniproject.ui.view.activity.SecondActivity
+import com.example.miniproject.ui.view.base.BaseCalendarFragment
 import com.example.miniproject.utils.DateTimeUtils
 import com.example.miniproject.utils.ToastUtils
 import java.time.DateTimeException
 import java.time.LocalDateTime
 import java.time.LocalTime
 
-class RequestCheckOutFragment : Fragment() {
+class RequestCheckOutFragment : BaseCalendarFragment(){
     private lateinit var editTextCheckOutDate : EditText
     private lateinit var icCalendarCheckOutDate : ImageView
     private lateinit var editTime : EditText
@@ -97,10 +98,7 @@ class RequestCheckOutFragment : Fragment() {
 
     private fun setupCalendarIconListener(){
         icCalendarCheckOutDate.setOnClickListener {
-            context?.let {
-                val intent = Intent(it, SecondActivity::class.java)
-                startActivity(intent)
-            }
+            openCalendar(editTextCheckOutDate)
         }
     }
 
