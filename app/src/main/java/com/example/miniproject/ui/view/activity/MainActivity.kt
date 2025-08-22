@@ -16,13 +16,14 @@ import com.example.miniproject.ui.view.fragment.RequestFragment
 import com.example.miniproject.utils.DateTimeUtils
 import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.navigation.NavigationView
+import java.time.LocalDate
 import java.time.LocalDateTime
 
 class MainActivity : AppCompatActivity() {
 
-    lateinit var drawer_layout : DrawerLayout
-    lateinit var toolbar : MaterialToolbar
-    lateinit var navigationMenu : NavigationView
+    private lateinit var drawer_layout : DrawerLayout
+    private lateinit var toolbar : MaterialToolbar
+    private lateinit var navigationMenu : NavigationView
     lateinit var date : TextView
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -96,7 +97,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setTextDate() {
-         val currentDate = LocalDateTime.now()
-         date.text = currentDate.format(DateTimeUtils.displayDate)
+        val currentDate = LocalDate.now()
+        date.text = DateTimeUtils.formatDate(currentDate)
     }
 }

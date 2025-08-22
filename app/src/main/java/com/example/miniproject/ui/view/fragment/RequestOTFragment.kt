@@ -17,14 +17,16 @@ import com.example.miniproject.data.manager.ActivityLogManager
 import com.example.miniproject.R
 import com.example.miniproject.constants.AppConstants
 import com.example.miniproject.ui.view.activity.SecondActivity
+import com.example.miniproject.ui.view.base.BaseCalendarFragment
 import com.example.miniproject.utils.DateTimeUtils
 import com.example.miniproject.utils.ToastUtils
 import java.time.DateTimeException
+import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
 
 
-class RequestOTFragment : Fragment() {
+class RequestOTFragment : BaseCalendarFragment() {
     private lateinit var editTextOTDate : EditText
     private lateinit var icCalendarOTDate : ImageView
     private lateinit var checkboxBreakTime : CheckBox
@@ -88,29 +90,27 @@ class RequestOTFragment : Fragment() {
 
     private fun setupCalendarIconLister() {
         icCalendarOTDate.setOnClickListener {
-            context?.let {
-                val intent = Intent(it, SecondActivity::class.java)
-                startActivity(intent)
-            }
+                openCalendar(editTextOTDate)
         }
     }
 
     private fun loadDefaultTimes(): Pair<String, String>{
         //get the check-in/out time data from sharedPref to set the new default From time & To time
         val sharedPref = requireContext().getSharedPreferences(AppConstants.PREFS_NAME, Context.MODE_PRIVATE)
-        val timeFormat = DateTimeUtils.displayTime
 
         val checkInTime = sharedPref.getString("checkInTime", " ") ?: " "
         val checkOutTime = sharedPref.getString("checkOutTime", " ") ?: " "
-        val timeToDisplay = checkOutTime
 
-        val timeFromDisplay = if(isValidTimeFormat(checkInTime)){
-            val plusDefaultTimeFrom = LocalTime.parse(checkInTime, timeFormat)
-            plusDefaultTimeFrom.plusHours(9).format(timeFormat)
-        }
-        else{
-            "xx:xx"
-        }
+        val timeToDisplay = DateTimeUtils.parseTimeOrNull(checkOutTime)
+            ?.format(DateTimeUtils.getTimeFormatter())
+            ?: "xx:xx"
+
+        //ถ้า checkInTime เป็นค่า valid จะ parse + บวก 9 ชั่วโมง แล้วแสดง
+        //ถ้า checkInTime ว่างหรือไม่ถูก format → fallback เป็น "xx:xx"
+        val timeFromDisplay = DateTimeUtils.parseTimeOrNull(checkInTime)
+            ?.plusHours(9)
+            ?.format(DateTimeUtils.getTimeFormatter())
+            ?: "xx:xx"
 
         editTextFromTime.setText(timeFromDisplay)
         editTextToTime.setText(timeToDisplay)
@@ -120,18 +120,18 @@ class RequestOTFragment : Fragment() {
 
      private fun setupBreakTimeCheckBox(plusDefaultTimeFrom: String, checkOutTime: String){
         //format time expected: convert String->LocalTime
-         val timeFormat = DateTimeUtils.displayTime
+         val timeFormat = DateTimeUtils.getTimeFormatter()
 
          checkboxBreakTime.setOnCheckedChangeListener { _, isChecked: Boolean ->  //_ is buttonView: CompoundButton
 
              //Convert time String ('xx:xx') to LocalTime in 'HH:mm' format
              //(to add 20 mins then convert it to String again and display on the screen)
-             val timeFrom = LocalTime.parse(plusDefaultTimeFrom, timeFormat)
-             val timeTo = LocalTime.parse(checkOutTime, timeFormat)
+             val timeFrom = DateTimeUtils.parseTimeOrNull(plusDefaultTimeFrom)
+             val timeTo = DateTimeUtils.parseTimeOrNull(checkOutTime)
 
              if (isChecked) {
-                 val plusNewTimeFrom = timeFrom.plusMinutes(20).format(timeFormat)
-                 val plusNewTimeTo = timeTo.plusMinutes(20).format(timeFormat)
+                 val plusNewTimeFrom = timeFrom?.plusMinutes(20)?.format(timeFormat) ?: plusDefaultTimeFrom
+                 val plusNewTimeTo = timeTo?.plusMinutes(20)?.format(timeFormat) ?: checkOutTime
 
                  editTextFromTime.setText(plusNewTimeFrom)
                  editTextToTime.setText(plusNewTimeTo)
@@ -149,7 +149,7 @@ class RequestOTFragment : Fragment() {
             return false
         }
         return try {
-            val timeFormat = DateTimeUtils.displayTime
+            val timeFormat = DateTimeUtils.getTimeFormatter()
             LocalTime.parse(time, timeFormat)  //Change time (from user) to Localtime
             true
         }
@@ -211,8 +211,8 @@ class RequestOTFragment : Fragment() {
     private fun setupButtonListeners() {
         //Save button
         btnSave.setOnClickListener {
-            val currentDate = LocalDateTime.now()
-            val dateFormat = currentDate.format(DateTimeUtils.displayDate)
+            val currentDate = LocalDate.now()
+            val dateFormat = DateTimeUtils.formatDate(currentDate)
 
             val date = editTextOTDate.text.toString()
             val fromTime = editTextFromTime.text.toString()

@@ -29,13 +29,14 @@ import com.example.miniproject.data.model.User
 import com.example.miniproject.data.network.ApiClient
 import com.example.miniproject.ui.view.HrView
 import com.example.miniproject.ui.view.activity.SecondActivity
+import com.example.miniproject.ui.view.base.BaseCalendarFragment
 import com.example.miniproject.utils.DateTimeUtils
 import com.example.miniproject.utils.ToastUtils
 import java.text.SimpleDateFormat
 import java.time.LocalDateTime
 import java.util.Locale
 
-class RequestLeaveFragment : Fragment() , HrView {
+class RequestLeaveFragment : BaseCalendarFragment(), HrView {
     private lateinit var spinnerLeaveType: Spinner
     private lateinit var icCalendarFromDate: ImageView
     private lateinit var icCalendarToDate: ImageView
@@ -81,7 +82,6 @@ class RequestLeaveFragment : Fragment() , HrView {
         setupTextChangeListeners()
 
         setupButtonListener()
-
 
         return view
     }
@@ -150,17 +150,11 @@ class RequestLeaveFragment : Fragment() , HrView {
 
     private fun setupCalendarIconLister() {
         icCalendarFromDate.setOnClickListener {
-            context?.let {
-                val intent = Intent(it, SecondActivity::class.java)
-                startActivity(intent)
+                openCalendar(editTextFromDate)
             }
-        }
 
         icCalendarToDate.setOnClickListener {
-            context?.let {
-                val intent = Intent(it, SecondActivity::class.java)
-                startActivity(intent)
-            }
+                openCalendar(editTextToDate)
         }
     }
 
@@ -204,7 +198,6 @@ class RequestLeaveFragment : Fragment() , HrView {
     private fun setupButtonListener() {
         btnSave.setOnClickListener {
             if (selectedLeaveType == LeaveType.NONE || selectedPeriodType == PeriodType.NONE) {
-               //ToastUtils.showToast(requireContext(), "Please select valid leave type and period.")
                 return@setOnClickListener
             }
 
@@ -231,10 +224,10 @@ class RequestLeaveFragment : Fragment() , HrView {
             clearFields()
             ToastUtils.showToast(requireContext(), R.string.data_applied)
 
-            val dateFormat = LocalDateTime.now().format(DateTimeUtils.displayDate)
+            val (logDate, _) = DateTimeUtils.formatDateTime(LocalDateTime.now())
             addRequestLeaveLog(
                 requireContext(),
-                dateFormat,
+                logDate,
                 selectedLeaveType.getDisplayName(requireContext()),
                 fromDate,
                 toDate,
@@ -300,7 +293,9 @@ class RequestLeaveFragment : Fragment() , HrView {
     }
 
     override fun onError(message: String) {
-        Toast.makeText(requireContext(), "Error: $message", Toast.LENGTH_LONG).show()
+        context?.let { ctx ->
+            Toast.makeText(ctx, message, Toast.LENGTH_SHORT).show()
+        }
     }
 
     override fun onClockInSuccess(clockInTime: Long?) {

@@ -16,13 +16,14 @@ import com.example.miniproject.data.manager.ActivityLogManager
 import com.example.miniproject.R
 import com.example.miniproject.constants.AppConstants
 import com.example.miniproject.ui.view.activity.SecondActivity
+import com.example.miniproject.ui.view.base.BaseCalendarFragment
 import com.example.miniproject.utils.DateTimeUtils
 import com.example.miniproject.utils.ToastUtils
 import java.time.DateTimeException
 import java.time.LocalDateTime
 import java.time.LocalTime
 
-class RequestCheckInFragment : Fragment() {
+class RequestCheckInFragment : BaseCalendarFragment() {
     private lateinit var btnSave : Button
     private lateinit var btnCancel :Button
 
@@ -68,7 +69,6 @@ class RequestCheckInFragment : Fragment() {
 
         editTextCheckInDate = view.findViewById(R.id.editTextCheckInDate)
         icCalendarCheckInDate = view.findViewById(R.id.imageCheckInDate)
-
     }
 
     private fun setupFragmentResultListener(){
@@ -81,10 +81,7 @@ class RequestCheckInFragment : Fragment() {
 
     private fun setupCalendarIconListener(){
         icCalendarCheckInDate.setOnClickListener {
-            context?.let {
-                val intent = Intent(it, SecondActivity::class.java)
-                startActivity(intent)
-            }
+                openCalendar(editTextCheckInDate)
         }
     }
 
@@ -107,17 +104,14 @@ class RequestCheckInFragment : Fragment() {
     private fun setupButtonListeners() {
         //Save button
         btnSave.setOnClickListener {
-
-            val currentDate = LocalDateTime.now()
-            val dateFormat = currentDate.format(DateTimeUtils.displayDate)
-
+            val (logDate, _) = DateTimeUtils.formatDateTime(LocalDateTime.now())
             val date = editTextCheckInDate.text.toString()
             val time = editTime.text.toString()
 
             saveToPreference(date,time, true)
             clearFields()
             ToastUtils.showToast(requireContext(), R.string.data_applied)
-            addRequestCheckInLog(requireContext(), dateFormat, date, time)
+            addRequestCheckInLog(requireContext(), logDate, date, time)
         }
 
         //Cancel button
@@ -130,8 +124,8 @@ class RequestCheckInFragment : Fragment() {
 
     private fun isValidTimeFormat(time: String): Boolean{
         return try {
-            val timeFormat = DateTimeUtils.displayTime
-            LocalTime.parse(time, timeFormat)  //Change time (from user) to Localtime
+            val timeFormat = DateTimeUtils.getTimeFormatter()
+            LocalTime.parse(time, timeFormat)
             true
         }
          catch (e: DateTimeException){
