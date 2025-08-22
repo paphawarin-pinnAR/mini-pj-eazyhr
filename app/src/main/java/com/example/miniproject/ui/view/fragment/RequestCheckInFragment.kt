@@ -104,17 +104,14 @@ class RequestCheckInFragment : BaseCalendarFragment() {
     private fun setupButtonListeners() {
         //Save button
         btnSave.setOnClickListener {
-
-            val currentDate = LocalDateTime.now()
-            val dateFormat = currentDate.format(DateTimeUtils.displayDate)
-
+            val (logDate, _) = DateTimeUtils.formatDateTime(LocalDateTime.now())
             val date = editTextCheckInDate.text.toString()
             val time = editTime.text.toString()
 
             saveToPreference(date,time, true)
             clearFields()
             ToastUtils.showToast(requireContext(), R.string.data_applied)
-            addRequestCheckInLog(requireContext(), dateFormat, date, time)
+            addRequestCheckInLog(requireContext(), logDate, date, time)
         }
 
         //Cancel button
@@ -127,8 +124,8 @@ class RequestCheckInFragment : BaseCalendarFragment() {
 
     private fun isValidTimeFormat(time: String): Boolean{
         return try {
-            val timeFormat = DateTimeUtils.displayTime
-            LocalTime.parse(time, timeFormat)  //Change time (from user) to Localtime
+            val timeFormat = DateTimeUtils.getTimeFormatter()
+            LocalTime.parse(time, timeFormat)
             true
         }
          catch (e: DateTimeException){

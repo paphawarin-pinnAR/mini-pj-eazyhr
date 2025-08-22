@@ -69,15 +69,13 @@ class RequestCheckOutFragment : BaseCalendarFragment(){
     private fun setupButtonListeners(){
         //Save button
         btnSave.setOnClickListener {
-            val currentDate = LocalDateTime.now()
-            val dateFormat = currentDate.format(DateTimeUtils.displayDate)
-
+            val (logDate, _) = DateTimeUtils.formatDateTime(LocalDateTime.now())
             val date = editTextCheckOutDate.text.toString()
             val time = editTime.text.toString()
 
             saveToPreference(date,time,false)
             clearFields()
-            addRequestCheckOutLog(requireContext(), dateFormat, date, time)
+            addRequestCheckOutLog(requireContext(), logDate, date, time)
 
             ToastUtils.showToast(requireContext(),R.string.data_applied)
         }
@@ -119,8 +117,7 @@ class RequestCheckOutFragment : BaseCalendarFragment(){
 
     private fun isValidTimeFormat(time: String): Boolean{
         return try {
-            val timeFormat = DateTimeUtils.displayTime
-            LocalTime.parse(time, timeFormat)  //Change time (from user) to Localtime
+            DateTimeUtils.parseTimeUser(time)
             true
         }
         catch (e: DateTimeException){

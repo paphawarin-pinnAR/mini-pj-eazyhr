@@ -1,6 +1,12 @@
 <resources>
     <string name="app_name">MiniProject</string>
 
+    <string name="btn_check_in">Check In</string>
+    <string name="btn_check_out">Check Out</string>
+
+    <string name="log_check_in">Check-in</string>
+    <string name="log_check_out">Check-out</string>
+
     <!--About Toast-->
     <string name="data_applied">The data has been applied.</string>
     <string name="data_deleted">The data has been deleted.</string>

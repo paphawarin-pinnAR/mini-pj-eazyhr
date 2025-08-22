@@ -52,11 +52,10 @@ class ActivitiesLogFragment : Fragment() {
     }
 
     private fun sortLogCellList () : List<ActivityLogData> {
-        val dateFormat = DateTimeUtils.displayDate
         val logs = ActivityLogManager.getActivityLog(requireContext())
         val sortedLogList = logs.sortedWith(
             compareBy<ActivityLogData> { it.priority } //sort by low->high priority 1,2,3,..,99
-                .thenByDescending { LocalDate.parse(it.date, dateFormat) }  //in case: same priority, sort by date
+                .thenByDescending { DateTimeUtils.parseDateUser(it.date) }  //in case: same priority, sort by date
                 .thenBy { ActivityLogManager.typeOrder(it.type) }//in case same priority and date, sort by type order
         )
         return sortedLogList

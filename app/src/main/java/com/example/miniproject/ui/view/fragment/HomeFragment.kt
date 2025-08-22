@@ -84,22 +84,20 @@ class HomeFragment : Fragment(), HrView {
             isCheckedIn = !isCheckedIn
 
             //Only use for the activities log
-            val now = LocalDateTime.now()
-            val dateFormat = now.format(DateTimeUtils.displayDate)
-            val timeFormat = now.format(DateTimeUtils.displayTime)
+            val (logDate, logTime) = DateTimeUtils.formatDateTime(LocalDateTime.now())
 
             if (isCheckedIn) {
                 toggleBtnStatusCheckInOut()
                 controller.clockInUser(userId)  //เรียก API ไปยัง server เพื่อบันทึกเวลา //API จะเก็บเวลาลงฐานข้อมูล
                 saveButtonState(true)
 
-                addCheckInLog(requireContext(), dateFormat, timeFormat)
+                addCheckInLog(requireContext(), logDate, logTime)
             } else {
                 toggleBtnStatusCheckInOut()
                 controller.clockOutUser(userId)
                 saveButtonState(false)
 
-                addCheckOutLog(requireContext(), dateFormat, timeFormat)
+                addCheckOutLog(requireContext(), logDate, logTime)
             }
         }
     }
@@ -132,10 +130,10 @@ class HomeFragment : Fragment(), HrView {
 
     private fun toggleBtnStatusCheckInOut() {
         if (isCheckedIn) {
-            btnCheckInOut.text = "Check Out"
+            btnCheckInOut.text = getString(R.string.btn_check_in)
             btnCheckInOut.setBackgroundResource(R.drawable.bg_button_check_out)
         } else {
-            btnCheckInOut.text = "Check In"
+            btnCheckInOut.text = getString(R.string.btn_check_in)
             btnCheckInOut.setBackgroundResource(R.drawable.bg_button_check_in)
         }
     }
@@ -143,14 +141,14 @@ class HomeFragment : Fragment(), HrView {
     private fun addCheckInLog(context: Context, date: String, time: String) {
         val log = ActivityLogManager.getActivityLog(context)
             .toMutableList() //.toMutableList() to allow add the new list
-        log.add(ActivityLogManager.createLog(date, "Check-in", "Check-in: $time")) //add new log
+        log.add(ActivityLogManager.createLog(date, getString(R.string.log_check_in), "${getString(R.string.log_check_in)}: $time")) //add new log
         ActivityLogManager.putActivityLog(context,log) //save log in sharedPreference as JSON format
     }
 
     private fun addCheckOutLog(context: Context, date: String, time: String) {
         val log = ActivityLogManager.getActivityLog(context)
             .toMutableList() //.toMutableList() to allow add the new list
-        log.add(ActivityLogManager.createLog(date, "Check-out", "Check-out: $time"))
+        log.add(ActivityLogManager.createLog(date, getString(R.string.log_check_out), "${getString(R.string.log_check_out)}: $time"))
         ActivityLogManager.putActivityLog(context, log)
     }
 
