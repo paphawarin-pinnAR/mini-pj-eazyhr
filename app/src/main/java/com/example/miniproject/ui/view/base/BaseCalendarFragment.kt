@@ -11,25 +11,28 @@ import com.example.miniproject.ui.view.activity.SecondActivity
 abstract class BaseCalendarFragment : Fragment() {
 
     private var targetEditText: EditText? = null
+    private var lastSelectedDate: String? = null  //store the latest date selection
 
-    //Create only one launcher tied to the Fragment's lifecycle
+    //create only one launcher tied to the Fragment's lifecycle
     //registerForActivityResult helps open the Activity and wait for the result to be sent back
     private val calendarLauncher = registerForActivityResult(
         ActivityResultContracts.StartActivityForResult()
     ) { result -> //callback lambda; It will be called immediately after the Activity opened with calendarLauncher.launch(intent) is closed
         if (result.resultCode == Activity.RESULT_OK) {
-            //Get the data sent back from the Activity via Intent
-            val selectedDate = result.data?.getStringExtra(AppConstants.SELECTED_DATE_REQ)
-            selectedDate?.let {
+            //get the data sent back from the Activity via Intent
+            lastSelectedDate = result.data?.getStringExtra(AppConstants.SELECTED_DATE_REQ)
+            lastSelectedDate?.let {
                targetEditText?.setText(it)
+               lastSelectedDate = it
             }
         }
     }
 
-    //Open CalendarActivity using the launcher
+    //open CalendarActivity using the launcher
     fun openCalendar(editText: EditText) {
         targetEditText = editText
         val intent = Intent(requireContext(), SecondActivity::class.java)
+        lastSelectedDate?.let { intent.putExtra(AppConstants.SELECTED_DATE_REQ, it) }
         calendarLauncher.launch(intent)
     }
 }
