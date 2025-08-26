@@ -81,8 +81,8 @@ class RequestOTFragment : BaseCalendarFragment() {
     }
 
     private fun setupFragmentResultListener() {
-        parentFragmentManager.setFragmentResultListener("OTDate", viewLifecycleOwner) { _, bundle ->
-            val selectedDate = bundle.getString("selectedDate")
+        parentFragmentManager.setFragmentResultListener(AppConstants.PREF_OT_DATE, viewLifecycleOwner) { _, bundle ->
+            val selectedDate = bundle.getString(AppConstants.PREF_SELECTED_DATE)
             editTextOTDate.setText(selectedDate)
             checkFields()
         }
@@ -98,19 +98,19 @@ class RequestOTFragment : BaseCalendarFragment() {
         //get the check-in/out time data from sharedPref to set the new default From time & To time
         val sharedPref = requireContext().getSharedPreferences(AppConstants.PREFS_NAME, Context.MODE_PRIVATE)
 
-        val checkInTime = sharedPref.getString("checkInTime", " ") ?: " "
-        val checkOutTime = sharedPref.getString("checkOutTime", " ") ?: " "
+        val checkInTime = sharedPref.getString(AppConstants.PREF_CHECK_IN_TIME, " ") ?: " "
+        val checkOutTime = sharedPref.getString(AppConstants.PREF_CHECK_OUT_TIME, " ") ?: " "
 
         val timeToDisplay = DateTimeUtils.parseTimeOrNull(checkOutTime)
             ?.format(DateTimeUtils.getTimeFormatter())
-            ?: "xx:xx"
+            ?:AppConstants.UNKNOWN_TIME
 
         //ถ้า checkInTime เป็นค่า valid จะ parse + บวก 9 ชั่วโมง แล้วแสดง
         //ถ้า checkInTime ว่างหรือไม่ถูก format → fallback เป็น "xx:xx"
         val timeFromDisplay = DateTimeUtils.parseTimeOrNull(checkInTime)
             ?.plusHours(9)
             ?.format(DateTimeUtils.getTimeFormatter())
-            ?: "xx:xx"
+            ?: AppConstants.UNKNOWN_TIME
 
         editTextFromTime.setText(timeFromDisplay)
         editTextToTime.setText(timeToDisplay)
@@ -145,7 +145,7 @@ class RequestOTFragment : BaseCalendarFragment() {
      }
 
     private fun isValidTimeFormat(time: String): Boolean{
-        if(time=="xx:xx") {
+        if(time == AppConstants.UNKNOWN_TIME) {
             return false
         }
         return try {
@@ -199,11 +199,11 @@ class RequestOTFragment : BaseCalendarFragment() {
     private fun saveToPreferences(date: String,fromTime:String,toTime: String,reason: String, isBreakTimeChecked: Boolean){
         val sharedPref = requireActivity().getSharedPreferences(AppConstants.PREFS_NAME, Context.MODE_PRIVATE)
         val editor = sharedPref.edit()
-        editor.putString("OTDate", date)
-        editor.putString("OTTimeFrom", fromTime)
-        editor.putString("OTTimeTo", toTime)
-        editor.putString("OTReason", reason)
-        editor.putBoolean("IsBreakTimeChecked", isBreakTimeChecked)
+        editor.putString(AppConstants.PREF_OT_DATE, date)
+        editor.putString(AppConstants.PREF_OT_TIME_FROM, fromTime)
+        editor.putString(AppConstants.PREF_OT_TIME_TO, toTime)
+        editor.putString(AppConstants.PREF_OT_REASON, reason)
+        editor.putBoolean(AppConstants.PREF_IS_BREAK_TIME, isBreakTimeChecked)
 
         editor.apply()
     }
@@ -240,6 +240,7 @@ class RequestOTFragment : BaseCalendarFragment() {
 
         log.add(
             ActivityLogManager.createLog(
+                context,
                 date,
                 "Request OT",
                 "OT Date: $reqDate, From Time: $timeFrom, To Time: $timeTo, Reason: $reason"

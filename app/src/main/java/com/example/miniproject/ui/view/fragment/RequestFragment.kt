@@ -9,8 +9,8 @@ import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Spinner
 import com.example.miniproject.R
+import com.example.miniproject.enums.RequestType
 import com.example.miniproject.utils.ToastUtils
-
 
 class RequestFragment : Fragment() {
 
@@ -36,8 +36,7 @@ class RequestFragment : Fragment() {
     private fun setupItemSelectedListener(){
         //get type from string.xml
         val items = resources.getStringArray(R.array.requestType)
-
-        setupArrayAdapterFromRes(items)
+        setupArrayAdapterFromRes()
 
         spinnerType.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(
@@ -48,36 +47,21 @@ class RequestFragment : Fragment() {
             ) {
 
                 if (position == 0) return
-                val typeSelected = items[position]
 
-                val fragment = when (typeSelected) {
-                    "Request check-in" -> {
-                        ToastUtils.showToast(requireContext(), R.string.request_check_in)
-                        RequestCheckInFragment()
-                    }
-                    "Request check-out" ->  {
-                        ToastUtils.showToast(requireContext(), R.string.request_check_out)
-                        RequestCheckOutFragment()
-                    }
-                    "Request OT" -> {
-                        ToastUtils.showToast(requireContext(), R.string.request_OT)
-                        RequestOTFragment()
-                    }
-                    "Request leave" -> {
-                        ToastUtils.showToast(requireContext(), R.string.request_leave)
-                        RequestLeaveFragment()
-                    }
-                    else -> {
-                        null
-                    }
-                }
+                val type = RequestType.fromPosition(position) ?: return
 
-                fragment?.let{
-                    childFragmentManager.beginTransaction()
-                        .replace(R.id.frame_sub, it)
-                        .commit()
-                }
+                //toast display
+                ToastUtils.showToast(requireContext(), when (type) {
+                    RequestType.REQUEST_CHECK_IN -> R.string.request_check_in
+                    RequestType.REQUEST_CHECK_OUT -> R.string.request_check_out
+                    RequestType.REQUEST_OT -> R.string.request_OT
+                    RequestType.REQUEST_LEAVE -> R.string.request_leave
+                })
 
+                val fragment = type.fragmentClass()
+                childFragmentManager.beginTransaction()
+                    .replace(R.id.frame_sub, fragment)
+                    .commit()
             }
 
             override fun onNothingSelected(parent: AdapterView<*>) {}
@@ -85,7 +69,7 @@ class RequestFragment : Fragment() {
         }
     }
 
-    private fun setupArrayAdapterFromRes(items: Array<String>) {
+    private fun setupArrayAdapterFromRes() {
         val arrayAdapter = ArrayAdapter.createFromResource(
             requireContext(),
             R.array.requestType,
@@ -96,7 +80,6 @@ class RequestFragment : Fragment() {
 
         spinnerType.adapter = arrayAdapter
     }
-
 }
 
 

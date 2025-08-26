@@ -3,7 +3,6 @@ package com.example.miniproject.data.network
 import com.example.miniproject.data.model.ApiResponse
 import com.example.miniproject.data.model.AttendanceData
 import com.example.miniproject.data.model.ClockInData
-import com.example.miniproject.data.model.ClockInRequest
 import com.example.miniproject.data.model.ClockOutData
 import com.example.miniproject.data.model.LeaveData
 import com.example.miniproject.data.model.LeaveRequest

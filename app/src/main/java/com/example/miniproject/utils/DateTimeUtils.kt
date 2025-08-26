@@ -10,14 +10,23 @@ import java.util.Locale
 
 object DateTimeUtils {
 
-    //Date format
+    private const val DATE_PATTERN = "MMM dd, yyyy"
+    private const val TIME_PATTERN = "HH:mm"
+
+    //Date
     fun getDateFormatter(): DateTimeFormatter {
-        return DateTimeFormatter.ofPattern("MMM dd, yyyy", Locale.getDefault())
+        return DateTimeFormatter.ofPattern(DATE_PATTERN, Locale.getDefault())
     }
 
-    //Time format
+    //Time
     fun getTimeFormatter(): DateTimeFormatter {
-        return DateTimeFormatter.ofPattern("HH:mm", Locale.getDefault())
+        return DateTimeFormatter.ofPattern(TIME_PATTERN, Locale.getDefault())
+    }
+
+    //Millis -> Time
+    fun formatTimeFromMillis(millis: Long): String {
+        val sdf = SimpleDateFormat(TIME_PATTERN, Locale.getDefault())
+        return sdf.format(Date(millis))
     }
 
     //LocalDate -> String
@@ -40,14 +49,9 @@ object DateTimeUtils {
         return LocalTime.parse(timeStr, getTimeFormatter())
     }
 
+    // String -> LocalDate object
     fun parseDateUser(dateStr: String): LocalDate {
         return LocalDate.parse(dateStr, getDateFormatter())
-    }
-
-    //Millis -> Time
-    fun formatTimeFromMillis(millis: Long): String {
-        val sdf = SimpleDateFormat("HH:mm", Locale.getDefault())
-        return sdf.format(Date(millis))
     }
 
     fun parseTimeOrNull(timeStr: String): LocalTime? {
@@ -57,5 +61,4 @@ object DateTimeUtils {
             null
         }
     }
-
 }

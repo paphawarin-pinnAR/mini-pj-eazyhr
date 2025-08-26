@@ -21,8 +21,6 @@ import com.example.miniproject.ui.view.HrView
 import com.example.miniproject.utils.DateTimeUtils
 import com.example.miniproject.utils.ToastUtils
 import java.time.LocalDateTime
-import java.time.LocalTime
-
 
 class HomeFragment : Fragment(), HrView {
     private lateinit var btnCheckInOut: Button
@@ -46,7 +44,7 @@ class HomeFragment : Fragment(), HrView {
 
         // สร้าง controller โดยส่ง reference ของ activity นี้ (view) ไปด้วย
         // this คือ HomeFragment ที่ implement HrView
-        controller = HrController(this, repository)
+        controller = HrController(this, repository, requireContext())
 
         // Initialize views
         initViews(view)
@@ -102,20 +100,20 @@ class HomeFragment : Fragment(), HrView {
         }
     }
 
-    // Declare the sharedPref variable to retrieve the SharedPreferences file: "PREFS_NAME"
-    // Start processing once the variable is retrieved from PREFS_NAME
+    //declare the sharedPref variable to retrieve the SharedPreferences file: "PREFS_NAME"
+    //start processing once the variable is retrieved from PREFS_NAME
     private val sharedPref by lazy {
         requireContext().getSharedPreferences(AppConstants.PREFS_NAME, Context.MODE_PRIVATE)
     }
 
     private fun saveButtonState(clockedIn: Boolean) {
         sharedPref.edit()
-            .putBoolean("clockedIn", clockedIn)
+            .putBoolean(AppConstants.PREF_CLOCK_IN, clockedIn)
             .apply()
     }
 
     private fun loadButtonState(): Boolean {
-        return sharedPref.getBoolean("clockedIn", false)
+        return sharedPref.getBoolean(AppConstants.PREF_CLOCK_IN, false)
     }
 
     private fun setTextTimeCheckIn(clockInTime: Long) {
@@ -141,14 +139,14 @@ class HomeFragment : Fragment(), HrView {
     private fun addCheckInLog(context: Context, date: String, time: String) {
         val log = ActivityLogManager.getActivityLog(context)
             .toMutableList() //.toMutableList() to allow add the new list
-        log.add(ActivityLogManager.createLog(date, getString(R.string.log_check_in), "${getString(R.string.log_check_in)}: $time")) //add new log
+        log.add(ActivityLogManager.createLog(context, date, getString(R.string.log_check_in), "${getString(R.string.log_check_in)}: $time")) //add new log
         ActivityLogManager.putActivityLog(context,log) //save log in sharedPreference as JSON format
     }
 
     private fun addCheckOutLog(context: Context, date: String, time: String) {
         val log = ActivityLogManager.getActivityLog(context)
             .toMutableList() //.toMutableList() to allow add the new list
-        log.add(ActivityLogManager.createLog(date, getString(R.string.log_check_out), "${getString(R.string.log_check_out)}: $time"))
+        log.add(ActivityLogManager.createLog(context, date, getString(R.string.log_check_out), "${getString(R.string.log_check_out)}: $time"))
         ActivityLogManager.putActivityLog(context, log)
     }
 
@@ -158,14 +156,15 @@ class HomeFragment : Fragment(), HrView {
 
     override fun onError(message: String) {
         if (isAdded) {
-            Toast.makeText(requireContext(), "Error: $message", Toast.LENGTH_LONG).show()
+            val errorText = getString(R.string.toast_error, message)
+            Toast.makeText(requireContext(), errorText, Toast.LENGTH_LONG).show()
         }
     }
 
     override fun onClockInSuccess(clockInTime: Long?) {
         if (clockInTime != null) {
             setTextTimeCheckIn(clockInTime)
-            Toast.makeText(requireContext(),"Check-in success at ${DateTimeUtils.formatTimeFromMillis(clockInTime)}", Toast.LENGTH_SHORT).show()
+            Toast.makeText(requireContext(), getString(R.string.toast_check_in_success, DateTimeUtils.formatTimeFromMillis(clockInTime)), Toast.LENGTH_SHORT).show()
         } else {
             ToastUtils.showToast(requireContext(), R.string.check_in_error)
         }
@@ -176,7 +175,7 @@ class HomeFragment : Fragment(), HrView {
             setTextTimeCheckOut(clockOutTime)
             Toast.makeText(
                 requireContext(),
-                "Check-out success at ${DateTimeUtils.formatTimeFromMillis(clockOutTime)}", Toast.LENGTH_SHORT).show()
+                getString(R.string.toast_check_out_success, DateTimeUtils.formatTimeFromMillis(clockOutTime)), Toast.LENGTH_SHORT).show()
         } else {
             ToastUtils.showToast(requireContext(), R.string.check_out_error)
         }

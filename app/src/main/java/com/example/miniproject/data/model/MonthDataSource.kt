@@ -4,6 +4,7 @@ import java.time.YearMonth
 
 //object is the singleton
 object MonthDataSource {
+
     fun getYearMonthList(): List<YearMonth> {
         val currentMonth = YearMonth.now()
         val startMonth = currentMonth.minusYears(10)

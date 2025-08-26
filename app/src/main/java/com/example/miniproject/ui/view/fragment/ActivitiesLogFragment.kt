@@ -12,6 +12,7 @@ import androidx.core.content.ContextCompat
 import com.example.miniproject.data.model.ActivityLogData
 import com.example.miniproject.data.manager.ActivityLogManager
 import com.example.miniproject.R
+import com.example.miniproject.enums.ActivityType
 import com.example.miniproject.utils.DateTimeUtils
 
 import java.time.LocalDate
@@ -48,7 +49,6 @@ class ActivitiesLogFragment : Fragment() {
             val row = createLogRow(index, log)
             tableActivitiesLog.addView(row)
         }
-
     }
 
     private fun sortLogCellList () : List<ActivityLogData> {
@@ -56,7 +56,7 @@ class ActivitiesLogFragment : Fragment() {
         val sortedLogList = logs.sortedWith(
             compareBy<ActivityLogData> { it.priority } //sort by low->high priority 1,2,3,..,99
                 .thenByDescending { DateTimeUtils.parseDateUser(it.date) }  //in case: same priority, sort by date
-                .thenBy { ActivityLogManager.typeOrder(it.type) }//in case same priority and date, sort by type order
+                .thenBy { ActivityType.fromString(it.type).getPriority() }//in case same priority and date, sort by type priority
         )
         return sortedLogList
     }
@@ -74,7 +74,6 @@ class ActivitiesLogFragment : Fragment() {
             )
         }
     }
-
 
     private fun createLogRow(index: Int, log: ActivityLogData) : TableRow {
         val row = TableRow(requireContext()) //create a new row by using the context of fragment to display the data in the table history
@@ -94,7 +93,6 @@ class ActivitiesLogFragment : Fragment() {
 
         return row
     }
-
 }
 
 
