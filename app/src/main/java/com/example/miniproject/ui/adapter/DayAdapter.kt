@@ -16,10 +16,9 @@ import java.time.LocalDate
 class DayAdapter (
     private val context: Context,
     private val days: List<DayData?>,
-    private val listener: OnDayClickListener )
-    : RecyclerView.Adapter<DayAdapter.DayViewHolder>() {
-
-    private var selectedDay: LocalDate? = LocalDate.now()  //Store the date selected by the user //private = Must be updated only by a method (encapsulation)
+    private val listener: OnDayClickListener,
+    private var selectedDay: LocalDate? = null
+): RecyclerView.Adapter<DayAdapter.DayViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DayViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.item_day, parent, false)
@@ -39,13 +38,13 @@ class DayAdapter (
         return days.indexOfFirst { it?.date == date }
     }
 
-    fun updateDayChange(day: LocalDate?) {
-        //For notice the RecyclerView that which the items need to refresh
+    fun updateDayChange(date: LocalDate?) {
+        //for notice the RecyclerView that which the items need to refresh
         val previousDayIndex = findDayIndex(selectedDay)
-        val newDayIndex = findDayIndex(day)
+        val newDayIndex = findDayIndex(date)
 
-        //Update the selectedDate as the user's selection
-        selectedDay = day
+        //update the selectedDate as the user's selection
+        selectedDay = date
 
         if (previousDayIndex != -1) notifyItemChanged(previousDayIndex)
         if (newDayIndex != -1) notifyItemChanged(newDayIndex)

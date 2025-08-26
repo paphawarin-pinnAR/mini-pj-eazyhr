@@ -1,6 +1,8 @@
 <resources>
     <string name="app_name">MiniProject</string>
 
+    <string name="month_year">%1$s %2$d</string>
+
     <string name="btn_check_in">Check In</string>
     <string name="btn_check_out">Check Out</string>
 
