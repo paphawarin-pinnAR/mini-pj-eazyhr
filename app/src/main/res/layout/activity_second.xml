@@ -119,17 +119,19 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
-            android:background="#FBF3F3">
+            android:background="#FBF3F3"
+            android:paddingTop="44dp"
+            >
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/calendarRecyclerView"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:padding="8dp"
+                android:padding="9dp"
                 android:clipToPadding="false"
                 tools:listitem="@layout/item_month"
                 android:fontFamily="@font/roboto_regular"
-                android:textSize="17sp"
+                android:textSize="18sp"
                 android:textColor="@android:color/black"/>
         </FrameLayout>
 
