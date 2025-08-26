@@ -22,14 +22,21 @@
     <string name="period_am">AM</string>
     <string name="period_pm">PM</string>
     <string name="period_full">Full Day</string>
-    <string name="period_none">None</string>
-
+    <string name="period_none"> </string>
 
     <string name="request_check_in">Request check-in</string>
     <string name="request_check_out">Request check-out</string>
     <string name="request_OT">Request OT</string>
     <string name="request_leave">Request leave</string>
-    <string name="request_none">None</string>
+    <string name="request_none"> </string>
+
+    <string name="activity_check_in">Check-in</string>
+    <string name="activity_request_check_in">Request Check-in</string>
+    <string name="activity_check_out">Check-out</string>
+    <string name="activity_request_check_out">Request Check-out</string>
+    <string name="activity_request_ot">Request OT</string>
+    <string name="activity_request_leave">Request Leave</string>
+    <string name="activity_unknown">Unknown</string>
 
     <string name="no_attendance_data">There is no an Attendance data</string>
     <string name="check_in_error">Check in error.</string>
@@ -68,4 +75,17 @@
         <item>Full Day</item>
     </string-array>
 
+    <string name="error_clock_in_failed">การลงเวลาเข้างานล้มเหลว</string>
+    <string name="error_clock_out_failed">การลงเวลาออกงานล้มเหลว</string>
+    <string name="error_network">ข้อผิดพลาดเครือข่าย: %1$s</string>
+    <string name="error_load_data_failed">โหลดข้อมูลล้มเหลว: %1$s</string>
+    <string name="error_leave_failed">การยื่นใบลาล้มเหลว: %1$s</string>
+    <string name="check_in_success">Check-in สำเร็จเวลา %1$s</string>
+    <string name="check_out_success">Check-out สำเร็จเวลา %1$s</string>
+    <string name="error_load_user_failed">โหลดข้อมูลผู้ใช้ล้มเหลว: %1$s</string>
+
+    <string name="leave_application_success">ยื่นใบลาสำเร็จ รหัสคำขอ: %1$s</string>
+    <string name="toast_error">Error: %s</string>
+    <string name="toast_check_in_success">Check-in success at %1$s</string>
+    <string name="toast_check_out_success">Check-out success at %1$s</string>
 </resources>

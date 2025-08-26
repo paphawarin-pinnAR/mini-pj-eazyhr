@@ -87,8 +87,8 @@ class RequestCheckOutFragment : BaseCalendarFragment(){
     }
 
     private fun setupFragmentResultListener() {
-        parentFragmentManager.setFragmentResultListener("checkOutDate", viewLifecycleOwner){ _, bundle ->
-            val selectedDate = bundle.getString("selectedDate")
+        parentFragmentManager.setFragmentResultListener(AppConstants.PREF_CHECK_OUT_DATE, viewLifecycleOwner){ _, bundle ->
+            val selectedDate = bundle.getString(AppConstants.PREF_SELECTED_DATE)
             editTextCheckOutDate.setText(selectedDate)
             checkFields()
         }
@@ -109,9 +109,9 @@ class RequestCheckOutFragment : BaseCalendarFragment(){
     private fun saveToPreference(date: String, time: String, isCheckedIn: Boolean) {
         val sharedPref = requireActivity().getSharedPreferences(AppConstants.PREFS_NAME, Context.MODE_PRIVATE)
         val editor = sharedPref.edit()
-        editor.putString("checkOutDate", date)
-        editor.putString("checkOutTime", time)
-        editor.putBoolean("isCheckedIn", isCheckedIn)
+        editor.putString(AppConstants.PREF_CHECK_OUT_DATE, date)
+        editor.putString(AppConstants.PREF_CHECK_OUT_TIME, time)
+        editor.putBoolean(AppConstants.PREF_IS_CHECKED_IN, isCheckedIn)
         editor.apply()
     }
 
@@ -139,7 +139,6 @@ class RequestCheckOutFragment : BaseCalendarFragment(){
             btnSave.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.gray))
 
         }
-
     }
 
     private fun addRequestCheckOutLog (context: Context, date:String, reqDate:String, time:String) {
@@ -147,6 +146,7 @@ class RequestCheckOutFragment : BaseCalendarFragment(){
 
         log.add(
             ActivityLogManager.createLog(
+                context,
                 date,
                 "Request Check-out",
                 "Request Check-out Date: $reqDate, Time: $time"

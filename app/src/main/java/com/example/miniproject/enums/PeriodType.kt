@@ -1,10 +1,8 @@
 package com.example.miniproject.enums
 
 import android.content.Context
-import androidx.annotation.StringRes
 import com.example.miniproject.R
 
-// PeriodType.kt
 enum class PeriodType {
     FULL_DAY,
     AM,
@@ -16,7 +14,7 @@ enum class PeriodType {
             FULL_DAY -> context.getString(R.string.period_full)
             AM -> context.getString(R.string.period_am)
             PM -> context.getString(R.string.period_pm)
-            NONE -> ""
+            NONE -> context.getString(R.string.period_none)
         }
     }
 }

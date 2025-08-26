@@ -72,8 +72,8 @@ class RequestCheckInFragment : BaseCalendarFragment() {
     }
 
     private fun setupFragmentResultListener(){
-        parentFragmentManager.setFragmentResultListener("checkInDate", viewLifecycleOwner){ _, bundle ->
-            val selectedDate = bundle.getString("selectedDate")
+        parentFragmentManager.setFragmentResultListener(AppConstants.PREF_CHECK_IN_DATE, viewLifecycleOwner){ _, bundle ->
+            val selectedDate = bundle.getString(AppConstants.PREF_SELECTED_DATE)
             editTextCheckInDate.setText(selectedDate)
             checkFields()
         }
@@ -94,9 +94,9 @@ class RequestCheckInFragment : BaseCalendarFragment() {
     private fun saveToPreference(date: String, time: String, isCheckedIn:Boolean) {
         val sharedPref = requireActivity().getSharedPreferences(AppConstants.PREFS_NAME, Context.MODE_PRIVATE)
         val editor = sharedPref.edit()
-        editor.putString("checkInDate", date)
-        editor.putString("checkInTime", time)
-        editor.putBoolean("isCheckedIn", isCheckedIn)
+        editor.putString(AppConstants.PREF_CHECK_IN_DATE, date)
+        editor.putString(AppConstants.PREF_CHECK_IN_TIME, time)
+        editor.putBoolean(AppConstants.PREF_IS_CHECKED_IN, isCheckedIn)
 
         editor.apply()
     }
@@ -119,7 +119,6 @@ class RequestCheckInFragment : BaseCalendarFragment() {
             clearFields()
             ToastUtils.showToast(requireContext(), R.string.data_deleted)
         }
-
     }
 
     private fun isValidTimeFormat(time: String): Boolean{
@@ -153,6 +152,7 @@ class RequestCheckInFragment : BaseCalendarFragment() {
 
         log.add(
             ActivityLogManager.createLog(
+                context,
                 date,
                 "Request Check-in",
                 "Request Check-in Date: $reqDate, Time: $time"
@@ -165,6 +165,5 @@ class RequestCheckInFragment : BaseCalendarFragment() {
         editTime.text.clear()
         editTextCheckInDate.text.clear()
     }
-
 }
 

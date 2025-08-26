@@ -60,7 +60,7 @@ class RequestLeaveFragment : BaseCalendarFragment(), HrView {
 
         val repository = HrRepository(ApiClient.apiService)
 
-        controller = HrController(this, repository)
+        controller = HrController(this, repository, requireContext())
 
         // Initialize views
         initViews(view)
@@ -133,16 +133,16 @@ class RequestLeaveFragment : BaseCalendarFragment(), HrView {
 
     private fun setupFragmentResultListener(){
         parentFragmentManager.setFragmentResultListener(
-            "fromDate",
+            AppConstants.FROM_DATE,
             viewLifecycleOwner
         ) { _, bundle ->
-            val selectedDate = bundle.getString("selectedDate")
+            val selectedDate = bundle.getString(AppConstants.PREF_SELECTED_DATE)
             editTextFromDate.setText(selectedDate)
             checkFields()
         }
 
-        parentFragmentManager.setFragmentResultListener("toDate", viewLifecycleOwner) { _, bundle ->
-            val selectedDate = bundle.getString("selectedDate")
+        parentFragmentManager.setFragmentResultListener(AppConstants.TO_DATE, viewLifecycleOwner) { _, bundle ->
+            val selectedDate = bundle.getString(AppConstants.PREF_SELECTED_DATE)
             editTextToDate.setText(selectedDate)
             checkFields()
         }
@@ -242,7 +242,6 @@ class RequestLeaveFragment : BaseCalendarFragment(), HrView {
         }
     }
 
-
     private fun checkFields() {
         val hasFromDate = editTextFromDate.text.isNotBlank()
         val hasToDate = editTextToDate.text.isNotBlank()
@@ -274,6 +273,7 @@ class RequestLeaveFragment : BaseCalendarFragment(), HrView {
 
         log.add(
             ActivityLogManager.createLog(
+                context,
                 date,
                 "Request Leave",
                 "Leave Type: $reqType, From Date: $dateFrom, To Date: $dateTo, Period: $period Reason: $reason"
@@ -315,7 +315,7 @@ class RequestLeaveFragment : BaseCalendarFragment(), HrView {
     }
 
     override fun onLeaveApplicationSuccess(leaveRequest: LeaveData?) {
-        Toast.makeText(requireContext(), "ยื่นใบลาสำเร็จ รหัสคำขอ: ${leaveRequest?.id}", Toast.LENGTH_SHORT).show()
+        Toast.makeText(requireContext(), getString(R.string.leave_application_success, leaveRequest?.id ?: "-"), Toast.LENGTH_SHORT).show()
     }
 }
 

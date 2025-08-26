@@ -1,7 +1,5 @@
 package com.example.miniproject.data.model
 
-import android.os.Message
-
 data class User(
     val id: String,
     val username: String,
